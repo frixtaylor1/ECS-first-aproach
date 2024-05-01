@@ -6,7 +6,7 @@ set(CXXFLAGS "-Wall -Werror -Wpedantic -O3")
 set(CMAKE_CXX_FLAGS ${CXXFLAGS})
 
 # Establece las rutas de los directorios
-set(INCLUDE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(INCLUDE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # Encuentra Raylib en el sistema
