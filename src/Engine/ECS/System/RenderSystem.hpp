@@ -5,17 +5,19 @@
 #include "../Entity/Entity.hpp"
 #include "../Component/DrawableComponents.hpp"
 
-class RenderSystem
+#include "./ISystem.hpp"
+
+class RenderSystem : implements ISystem
 {
 public:
-    RenderSystem(std::vector<ScopePtr<Entity>, StaticAllocator<Entity, 1024> >& entities);
+    RenderSystem(const EntityContainer entities);
+    virtual ~RenderSystem() {}
     void render();
 
 protected:
-    RectangleDrawableComponent* entityIsRectangle(ScopePtr<Entity>& entity);
+    RectangleDrawableComponent* isRectangle(ScopePtr<Entity>& entity);
 
 private:
     void renderLogic();
-
-    std::vector<ScopePtr<Entity>, StaticAllocator<Entity, 1024> >& m_entities;
+    EntityContainer m_entities;
 };

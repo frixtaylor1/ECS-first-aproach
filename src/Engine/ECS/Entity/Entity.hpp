@@ -7,6 +7,9 @@
 #include <vector>
 
 class Entity {
+private:
+    enum { COMPONENTS_MAX_CAPACITY = 5 };
+    using ComponentContainer = std::vector<ScopePtr<IComponent>, StaticAllocator<ScopePtr<IComponent>, COMPONENTS_MAX_CAPACITY> >;
 public:
     Entity();
     virtual ~Entity();
@@ -17,8 +20,8 @@ public:
 
     template <typename ComponentType>
     ComponentType* getComponent() const noexcept {
-        for (const auto& component : m_components) {
-            if (auto castedComponent = dynamic_cast<ComponentType*>(component.get())) {
+        for (const ScopePtr<IComponent>& component : m_components) {
+            if (ComponentType* castedComponent = dynamic_cast<ComponentType*>(component.get())) {
                 return castedComponent;
             }
         }
@@ -32,9 +35,9 @@ public:
     }
 
 private:
-    size_t          id;
-    static size_t   id_counter;
-
-    enum { COMPONENTS_MAX_CAPACITY = 5 };
-    std::vector<ScopePtr<IComponent>, StaticAllocator<ScopePtr<IComponent>, COMPONENTS_MAX_CAPACITY> > m_components;
+    size_t              id;
+    static size_t       id_counter;
+    ComponentContainer  m_components;
 };
+
+using EntityContainer = std::vector<ScopePtr<Entity>, StaticAllocator<Entity, 1024> >&;

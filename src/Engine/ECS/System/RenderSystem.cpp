@@ -15,13 +15,13 @@ void RenderSystem::renderLogic() {
     ClearBackground(LIGHTGRAY);
 
     for (ScopePtr<Entity>& entity : m_entities) {
-        if (auto rectangleEntity = entityIsRectangle(entity)) {
+        if (RectangleDrawableComponent* rectangleEntity = isRectangle(entity)) {
             DrawRectangleRec(rectangleEntity->rectangle, rectangleEntity->color);
         }
     }
 }
 
-RectangleDrawableComponent* RenderSystem::entityIsRectangle(ScopePtr<Entity>& entity) {
+RectangleDrawableComponent* RenderSystem::isRectangle(ScopePtr<Entity>& entity) {
     if (auto rectangle = entity.get()->getComponent<RectangleDrawableComponent>()) {
         return rectangle;
     }
