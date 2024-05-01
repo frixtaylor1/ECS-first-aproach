@@ -22,11 +22,13 @@ struct RectangleDrawableComponent : implements IDrawableComponent {
 };
 
 struct ImageDrawableComponent : implements IDrawableComponent {
+    ImageDrawableComponent(const Image& image);
     virtual ~ImageDrawableComponent();
     Image image;
 };
 
 struct TextureDrawableComponent : implements IDrawableComponent {
+    TextureDrawableComponent(const Texture& texture);
     virtual ~TextureDrawableComponent();
     Texture texture;
 };

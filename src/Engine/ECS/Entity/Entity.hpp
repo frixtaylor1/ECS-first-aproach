@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Allocators/StaticAllocator.hpp"
+#include "../../Utils/Allocators/StaticAllocator.hpp"
 #include "../Component/IComponent.hpp"
 
 #include <cassert>
@@ -8,15 +8,17 @@
 
 class Entity {
 public:
-    Entity() = default;
+    Entity();
+    virtual ~Entity();
 
-    virtual ~Entity() {
-    }
+    bool operator == (const Entity& entity) const;
+    bool operator == (size_t anId) const;
+    size_t getId() const;
 
     template <typename ComponentType>
     ComponentType* getComponent() const noexcept {
         for (const auto& component : m_components) {
-            if (auto castedComponent = dynamic_cast<ComponentType*> (component.get())) {
+            if (auto castedComponent = dynamic_cast<ComponentType*>(component.get())) {
                 return castedComponent;
             }
         }
@@ -30,6 +32,9 @@ public:
     }
 
 private:
+    size_t          id;
+    static size_t   id_counter;
+
     enum { COMPONENTS_MAX_CAPACITY = 5 };
     std::vector<ScopePtr<IComponent>, StaticAllocator<ScopePtr<IComponent>, COMPONENTS_MAX_CAPACITY> > m_components;
 };

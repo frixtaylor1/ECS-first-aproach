@@ -1,21 +1,23 @@
 #include "./Engine/ECS/Entity/Entity.hpp"
 #include "./Engine/ECS/System/RenderSystem.hpp"
+#include "./Engine/Managers/EntityManager.hpp"
 
 int main(void) {
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+    const int screenWidth   = 800;
+    const int screenHeight  = 600;
+
+    EntityManager entityManager;
 
     InitWindow(screenWidth, screenHeight, "raylib and ECS example");
         SetTargetFPS(60);
 
-        ScopePtr<Entity> player1(new Entity());
-        player1->addComponent<RectangleDrawableComponent>(
-            10, GetScreenHeight() / 2.0f - 50, 200, 100, GOLD);
+        entityManager.addEntity(new Entity());
+        const size_t lastInsertId = entityManager.getLastInsertEntity()->getId(); 
+        entityManager.addComponent<RectangleDrawableComponent>(lastInsertId, 
+            10, GetScreenHeight() / 2.0f - 50, 200, 100, GOLD
+        );
 
-        std::vector<ScopePtr<Entity>> entities;
-        entities.emplace_back(std::move(player1));
-
-        RenderSystem renderSys(entities);
+        RenderSystem renderSys(entityManager.getEntities());
         // MAIN ENGINE LOOP...
         while (!WindowShouldClose()) {
             renderSys.render();

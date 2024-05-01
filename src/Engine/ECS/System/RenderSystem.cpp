@@ -1,22 +1,24 @@
 #include "./RenderSystem.hpp"
 
-#include <raylib.h>
-
-RenderSystem::RenderSystem(std::vector<ScopePtr<Entity>>& entities)
+RenderSystem::RenderSystem(std::vector<ScopePtr<Entity>, StaticAllocator<Entity, 1024>>& entities)
     : m_entities(entities) {}
 
 void RenderSystem::render() {
     /*BEGIN DRAWING*/
     BeginDrawing();
+        renderLogic();
+    EndDrawing();
+    /*END DRAWING*/
+}
+
+void RenderSystem::renderLogic() {
     ClearBackground(LIGHTGRAY);
 
-    for (auto&& entity : m_entities) {
+    for (ScopePtr<Entity>& entity : m_entities) {
         if (auto rectangleEntity = entityIsRectangle(entity)) {
             DrawRectangleRec(rectangleEntity->rectangle, rectangleEntity->color);
         }
     }
-    EndDrawing();
-    /*END DRAWING*/
 }
 
 RectangleDrawableComponent* RenderSystem::entityIsRectangle(ScopePtr<Entity>& entity) {

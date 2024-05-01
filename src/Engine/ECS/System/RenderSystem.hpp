@@ -8,12 +8,14 @@
 class RenderSystem
 {
 public:
-    RenderSystem(std::vector<ScopePtr<Entity> >& entities);
+    RenderSystem(std::vector<ScopePtr<Entity>, StaticAllocator<Entity, 1024> >& entities);
     void render();
 
 protected:
     RectangleDrawableComponent* entityIsRectangle(ScopePtr<Entity>& entity);
 
 private:
-    std::vector<ScopePtr<Entity> >& m_entities;
+    void renderLogic();
+
+    std::vector<ScopePtr<Entity>, StaticAllocator<Entity, 1024> >& m_entities;
 };

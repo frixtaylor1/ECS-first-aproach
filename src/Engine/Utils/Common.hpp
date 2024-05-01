@@ -8,10 +8,12 @@
 template <typename Type>
 class SafeUniquePtr {
 public:
-    explicit SafeUniquePtr(Type* ptr = nullptr) : ptr_(ptr) {}
+    explicit SafeUniquePtr(Type* ptr = nullptr, bool owned = true) : ptr_(ptr), owned(owned) {}
 
     ~SafeUniquePtr() {
-        delete ptr_;
+        if (ptr_ && owned) {
+            delete ptr_;
+        }
     }
 
     SafeUniquePtr(const SafeUniquePtr&) = delete;
@@ -24,7 +26,9 @@ public:
 
     SafeUniquePtr& operator=(SafeUniquePtr&& other) noexcept {
         if (this != &other) {
-            delete ptr_;
+            if (ptr_ && owned) {
+                delete ptr_;
+            }
             ptr_ = other.ptr_;
             other.ptr_ = nullptr;
         }
@@ -49,6 +53,7 @@ public:
 
 private:
     Type* ptr_;
+    bool owned;
 };
 
 template <typename Type>
