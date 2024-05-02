@@ -2,7 +2,17 @@
 #include <raylib.h>
 #include "./IComponent.hpp"
 
+/**
+ * RectangleDrawableComponent with constructor:
+ * 
+ * @param float posX
+ * @param float posY
+ * @param float width
+ * @param float height
+ * @param Color color
+ */
 struct RectangleDrawableComponent : implements IDrawableComponent {
+
     RectangleDrawableComponent(float posX, float posY, float width, float height, Color color);
 
     virtual ~RectangleDrawableComponent();

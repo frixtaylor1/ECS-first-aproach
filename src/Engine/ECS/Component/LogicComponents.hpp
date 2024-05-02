@@ -19,17 +19,21 @@ struct MovableComponent : implements IComponent {
  * PysicsCompoent structure.
  * Constructor with parameters... 
  * 
- * @param float speed
+ * @param Vector2       - velocity
+ * @param float         - speed
+ * @param velocityLimit - velocityLimit
  */
 struct PhysicsComponent : implements IComponent {
     PhysicsComponent() = default;
     /**
-     * @param float speed
+     * @param Vector2 velocity
      */
-    PhysicsComponent(float speed);
+    PhysicsComponent(Vector2 velocity, float speed, float velocityLimit);
     virtual ~PhysicsComponent();
 
+    Vector2 velocity;
     float speed;
+    float velocityLimit;
 };
 
 /**
@@ -56,4 +60,12 @@ struct SolidComponent : implements IComponent {
     SolidComponent(bool solid);
     virtual ~SolidComponent();
     bool solid;
+};
+
+/**  
+ * ControllableComponent structure.
+ */
+struct InputComponent : implements IComponent {
+    typedef int Key;
+    Key  key;
 };

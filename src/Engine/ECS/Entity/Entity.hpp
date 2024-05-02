@@ -6,9 +6,11 @@
 #include <cassert>
 #include <vector>
 
+#define ENTITY_COMPONENTS_CAPACITY 7
+
 class Entity {
 private:
-    enum { COMPONENTS_MAX_CAPACITY = 5 };
+    enum { COMPONENTS_MAX_CAPACITY = ENTITY_COMPONENTS_CAPACITY };
     using ComponentContainer = std::vector<ScopePtr<IComponent>, StaticAllocator<ScopePtr<IComponent>, COMPONENTS_MAX_CAPACITY> >;
 public:
     Entity();

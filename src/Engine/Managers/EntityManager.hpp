@@ -6,8 +6,7 @@ template <size_t MaxCapcity = 1024>
 class EntityManager {
 private:
     enum { ENTITIES_MAX_CAPACITY = MaxCapcity };
-    using EntityContainer = std::vector<ScopePtr<Entity>, StaticAllocator<Entity, ENTITIES_MAX_CAPACITY>>;
-
+    using Container = std::vector<ScopePtr<Entity>, StaticAllocator<Entity, ENTITIES_MAX_CAPACITY>>;
 public:
 
     EntityManager() = default;
@@ -48,10 +47,10 @@ public:
         m_entities.back();
     }
 
-    EntityContainer& getEntities() {
+    Container& getEntities() {
         return m_entities;
     }
 
 private:
-    EntityContainer m_entities{};
+    Container m_entities{};
 };
