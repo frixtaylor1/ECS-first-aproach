@@ -5,6 +5,8 @@
 #include "./ISystem.hpp"
 #include "../Entity/Entity.hpp"
 
+#include <iostream>
+
 class CollisionSystem {
 public:
     CollisionSystem(EntityContainer entities) : m_entities(entities) {}
@@ -23,20 +25,26 @@ public:
                     continue;
                 }
 
-                CollisionComponent* collisionComponentB = isCollisionComponent(entityB);
+                CollisionComponent* collisionComponentB      = isCollisionComponent(entityB);
+                RectangleDrawableComponent* rectangleEntityA = isRectangleComponent(entityA);
+                RectangleDrawableComponent* rectangleEntityB = isRectangleComponent(entityB);
 
-                RectangleDrawableComponent* rectangleEntityA = &*entityA->getComponent<RectangleDrawableComponent>();
-                RectangleDrawableComponent* rectangleEntityB = &*entityB->getComponent<RectangleDrawableComponent>();
 
-                if (!collisionComponentB) {
+                if (!collisionComponentB || !rectangleEntityA || !rectangleEntityB) {
                     continue;
                 }
 
                 if (CheckCollisionRecs(rectangleEntityA->rectangle, rectangleEntityB->rectangle)) {
+                    collisionComponentA->colliding = true;
+                    collisionComponentB->colliding = true;
+                    
                     rectangleEntityA->color = RED;
                     rectangleEntityB->color = RED;
                     handleCollision(entityA, entityB);
                 } else {
+                    collisionComponentA->colliding = false;
+                    collisionComponentB->colliding = false;
+                    
                     rectangleEntityA->color = GOLD;
                     rectangleEntityB->color = GOLD;
                 }
@@ -52,6 +60,10 @@ private:
 
     CollisionComponent* isCollisionComponent(ScopePtr<Entity>& entity) {
         return &*entity->getComponent<CollisionComponent>();
+    }
+
+    RectangleDrawableComponent* isRectangleComponent(ScopePtr<Entity>& entity) {
+        return &*entity->getComponent<RectangleDrawableComponent>();
     }
 
     EntityContainer m_entities;

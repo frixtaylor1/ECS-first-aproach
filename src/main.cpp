@@ -19,8 +19,8 @@ int main(void) {
     InitWindow(screenWidth, screenHeight, "raylib and ECS example");
         SetTargetFPS(FPS_RATE);
 
+        // ENTITY ONE...
         entityManager.addEntity(new Entity());
-        
         size_t lastInsertId = entityManager.getLastInsertEntity()->getId(); 
         entityManager.addComponent<RectangleDrawableComponent>(lastInsertId, 10, GetScreenHeight() / 2.0f - 50, 30, 30, GOLD);
         entityManager.addComponent<PhysicsComponent>(lastInsertId, Vector2{0.f, 0.f}, 30.f, 6.f);
@@ -28,12 +28,21 @@ int main(void) {
         entityManager.addComponent<InputComponent>(lastInsertId);
         entityManager.addComponent<CollisionComponent>(lastInsertId);
 
+
+        // ENTITY TWO...
         entityManager.addEntity(new Entity());
-        
         lastInsertId = entityManager.getLastInsertEntity()->getId(); 
         entityManager.addComponent<RectangleDrawableComponent>(lastInsertId, 10, GetScreenHeight() / 2.0f - 50, 30, 30, GOLD);
         entityManager.addComponent<PhysicsComponent>(lastInsertId, Vector2{0.f, 0.f}, 30.f, 6.f);
         entityManager.addComponent<CollisionComponent>(lastInsertId);
+
+
+        // ENTITY THREE...
+        entityManager.addEntity(new Entity());
+        lastInsertId = entityManager.getLastInsertEntity()->getId(); 
+        entityManager.addComponent<PhysicsComponent>(lastInsertId, Vector2{0.f, 0.f}, 30.f, 6.f);
+        entityManager.addComponent<CollisionComponent>(lastInsertId);
+
 
         PhysicsSystem<FPS_RATE> physicsSys(entityManager.getEntities());
         RenderSystem            renderSys(entityManager.getEntities());
