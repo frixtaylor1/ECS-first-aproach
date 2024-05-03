@@ -42,4 +42,4 @@ private:
     ComponentContainer  m_components;
 };
 
-using EntityContainer = std::vector<ScopePtr<Entity>, StaticAllocator<Entity, 1024> >&;
+using EntityContainer = std::vector<ScopePtr<Entity>, StaticAllocator<Entity, 1024>>&;

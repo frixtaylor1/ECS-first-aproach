@@ -2,6 +2,7 @@
 #include "./Engine/ECS/System/RenderSystem.hpp"
 #include "./Engine/ECS/System/PhysicsSystem.hpp"
 #include "./Engine/ECS/System/InputSystem.hpp"
+#include "./Engine/ECS/System/CollisionSystem.hpp"
 #include "./Engine/ECS/Component/LogicComponents.hpp"
 #include "./Engine/Managers/EntityManager.hpp"
 
@@ -25,11 +26,19 @@ int main(void) {
         entityManager.addComponent<PhysicsComponent>(lastInsertId, Vector2{0.f, 0.f}, 30.f, 6.f);
         entityManager.addComponent<MovableComponent>(lastInsertId);
         entityManager.addComponent<InputComponent>(lastInsertId);
+        entityManager.addComponent<CollisionComponent>(lastInsertId);
+
+        entityManager.addEntity(new Entity());
+        
+        lastInsertId = entityManager.getLastInsertEntity()->getId(); 
+        entityManager.addComponent<RectangleDrawableComponent>(lastInsertId, 10, GetScreenHeight() / 2.0f - 50, 30, 30, GOLD);
+        entityManager.addComponent<PhysicsComponent>(lastInsertId, Vector2{0.f, 0.f}, 30.f, 6.f);
+        entityManager.addComponent<CollisionComponent>(lastInsertId);
 
         PhysicsSystem<FPS_RATE> physicsSys(entityManager.getEntities());
-        RenderSystem renderSys(entityManager.getEntities());
-        InputSystem  inputSys(entityManager.getEntities());
-
+        RenderSystem            renderSys(entityManager.getEntities());
+        InputSystem             inputSys(entityManager.getEntities());
+        CollisionSystem         collisionSys(entityManager.getEntities());
 
         double deltaTime = 0.016;
         double lastFrame = GetTime();
@@ -41,7 +50,8 @@ int main(void) {
             lastFrame = currentFrame;
 
             inputSys.update();
-            physicsSys.update(deltaTime);
+            physicsSys.update(deltaTime, inputSys);
+            collisionSys.update();
             renderSys.render();
         }
         // END MAIN ENGINE LOOP. //

@@ -67,5 +67,6 @@ struct SolidComponent : implements IComponent {
  */
 struct InputComponent : implements IComponent {
     typedef int Key;
+    bool keyPressed;
     Key  key;
 };

@@ -12,7 +12,7 @@ void RenderSystem::render() {
 }
 
 void RenderSystem::renderLogic() {
-    ClearBackground(LIGHTGRAY);
+    ClearBackground(DARKGRAY);
 
     for (ScopePtr<Entity>& entity : m_entities) {
         if (RectangleDrawableComponent* rectangleEntity = isRectangle(entity)) {
@@ -22,7 +22,7 @@ void RenderSystem::renderLogic() {
 }
 
 RectangleDrawableComponent* RenderSystem::isRectangle(ScopePtr<Entity>& entity) {
-    if (auto rectangle = entity.get()->getComponent<RectangleDrawableComponent>()) {
+    if (auto rectangle = &*entity->getComponent<RectangleDrawableComponent>()) {
         return rectangle;
     }
     return nullptr;
