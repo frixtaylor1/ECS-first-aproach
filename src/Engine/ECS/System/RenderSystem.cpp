@@ -1,6 +1,6 @@
 #include "./RenderSystem.hpp"
 
-RenderSystem::RenderSystem(std::vector<ScopePtr<Entity>, StaticAllocator<Entity, 1024>>& entities)
+RenderSystem::RenderSystem(const EntityContainer entities)
     : m_entities(entities) {}
 
 void RenderSystem::update() {

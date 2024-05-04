@@ -4,21 +4,21 @@
 
 /**
  * MovableComponent structure.
- * Constructor with parameters... 
- * 
+ * Constructor with parameters...
+ *
  * @param bool moving
  */
 struct MovableComponent : implements IComponent {
     MovableComponent() = default;
-    MovableComponent(bool moving); 
+    MovableComponent(bool moving);
     virtual ~MovableComponent();
     bool moving;
 };
 
 /**
  * PysicsCompoent structure.
- * Constructor with parameters... 
- * 
+ * Constructor with parameters...
+ *
  * @param Vector2       - velocity
  * @param float         - speed
  * @param velocityLimit - velocityLimit
@@ -38,8 +38,8 @@ struct PhysicsComponent : implements IComponent {
 
 /**
  * CollisionComponent structure.
- * Constructor with parameters... 
- * 
+ * Constructor with parameters...
+ *
  * @param bool colliding
  */
 struct CollisionComponent : implements IComponent {
@@ -51,8 +51,8 @@ struct CollisionComponent : implements IComponent {
 
 /**
  * SolidComponent structure.
- * Constructor with parameters... 
- * 
+ * Constructor with parameters...
+ *
  * @param bool solid
  */
 struct SolidComponent : implements IComponent {
@@ -62,7 +62,7 @@ struct SolidComponent : implements IComponent {
     bool solid;
 };
 
-/**  
+/**
  * ControllableComponent structure.
  */
 struct InputComponent : implements IComponent {
@@ -73,11 +73,18 @@ struct InputComponent : implements IComponent {
 
 /**
  * PlayerComponent structure.
- * Constructor with parameters... 
- * 
+ * Constructor with parameters...
+ *
  * @param int score
+ * @param int* bombs
  */
 struct PlayerComponent : implements IComponent {
     virtual ~PlayerComponent();
+    enum { BOMS_CAP = 1 };
     int score = 0;
+    int bombs[BOMS_CAP] = {0};
+};
+
+struct EnemyComponent : implements IComponent {
+    virtual ~EnemyComponent();
 };

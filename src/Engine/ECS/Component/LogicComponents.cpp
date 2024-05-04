@@ -10,3 +10,5 @@ CollisionComponent::CollisionComponent(bool colliding) : colliding(colliding) {}
 CollisionComponent::~CollisionComponent() {}
 
 PlayerComponent::~PlayerComponent() {}
+
+EnemyComponent::~EnemyComponent() {}

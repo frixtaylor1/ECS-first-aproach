@@ -20,9 +20,7 @@ SafeUniquePtr<Type>::SafeUniquePtr(SafeUniquePtr&& other) noexcept : ptr_(other.
 template <typename Type>
 SafeUniquePtr<Type>& SafeUniquePtr<Type>::operator=(SafeUniquePtr&& other) noexcept {
     if (this != &other) {
-        if (ptr_) {
-            delete ptr_;
-        }
+        delete ptr_;
         ptr_ = other.ptr_;
         other.ptr_ = nullptr;
     }

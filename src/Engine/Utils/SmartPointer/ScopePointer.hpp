@@ -11,18 +11,18 @@ public:
 
     ~SafeUniquePtr();
 
-    SafeUniquePtr& operator=(const SafeUniquePtr&) = delete;
-    SafeUniquePtr& operator=(SafeUniquePtr&& other)       noexcept;
-    Type* get()                                     const noexcept;
-    Type& operator*()                               const noexcept;
-    Type* operator->()                              const noexcept;
-    explicit operator bool()                        const noexcept;
+    SafeUniquePtr& operator = (const SafeUniquePtr&) = delete;
+    SafeUniquePtr& operator = (SafeUniquePtr&& other)       noexcept;
+    Type* get()                                       const noexcept;
+    Type& operator * ()                               const noexcept;
+    Type* operator -> ()                              const noexcept;
+    explicit operator bool()                          const noexcept;
 
 private:
     Type* ptr_;
 };
 
+#include "./ScopePointerImpl.hpp"
+
 template <typename Type>
 using ScopePtr = SafeUniquePtr<Type>;
-
-#include "./ScopePointerImpl.hpp"

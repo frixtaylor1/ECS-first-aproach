@@ -12,8 +12,8 @@ public:
 
     void update() {
         double currentFrame = GetTime();
-        float  deltaTime    = currentFrame - lastFrame;
-        lastFrame           = currentFrame;
+        float  deltaTime    = currentFrame - m_lastFrame;
+        m_lastFrame         = currentFrame;
 
         for (ScopePtr<Entity>& entity : m_entities) {
             updatePlayer(entity, deltaTime);
@@ -21,7 +21,6 @@ public:
         }
     }
 private:
-
     void updatePlayer(ScopePtr<Entity>& entity, float delta)
     {
         if (!isPlayerEntity(entity)) {
@@ -38,7 +37,7 @@ private:
             if (inputComponentPlayer->key == KEY_LEFT)  drawableComponentPlayer->rectangle.x -= calculateDeltaX(physicsComponentPlayer, delta);
             if (inputComponentPlayer->key == KEY_RIGHT) drawableComponentPlayer->rectangle.x += calculateDeltaX(physicsComponentPlayer, delta);
         }
-            
+                       
 /*
         Ejemplo de gravedad para mapas en 2d en plano normal[generalisimo y plano general] y no en plano cenital[generalisimo y general].
         bool hitObstacle = false;
@@ -101,7 +100,6 @@ private:
     }
 
 private:
-    float delta = 0.16;
-    double lastFrame = GetTime();
+    double          m_lastFrame = GetTime();
     EntityContainer m_entities;
 };

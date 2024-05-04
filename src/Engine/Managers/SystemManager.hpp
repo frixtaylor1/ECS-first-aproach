@@ -1,26 +1,40 @@
 #pragma once
 
-#include "../ECS/System/PhysicsSystem.hpp"
-#include "../ECS/System/RenderSystem.hpp"
-#include "../ECS/System/InputSystem.hpp"
+#include "../Utils/Allocators/StaticAllocator.hpp"
+#include "../ECS/System/ISystem.hpp"
 
-#define FPS_RATE 60
+#include <vector>
+
+#define MAX_CAP_SYS 10
 
 class SystemManager {
+private:
+    using SystemContainer = std::vector<ScopePtr<ISystem>, StaticAllocator<ScopePtr<ISystem>, MAX_CAP_SYS> >;
 public:
     SystemManager() = default;
-
-    SystemManager(const PhysicsSystem& physicsSystem, const RenderSystem& renderSystem, const InputSystem& inputSystem)
-        : m_physicsSystem(physicsSystem), m_renderSystem(renderSystem), m_inputSystem(inputSystem) {}
-
     ~SystemManager() {}
 
-    const RenderSystem&     getRenderSystem()   const { return m_renderSystem;  }
-    const InputSystem&      getInputSystem()    const { return m_inputSystem;   }
-    const PhysicsSystem&    getPhysicsSystem()  const { return m_physicsSystem; }
-    
+    template <typename SystemType, typename... Args>
+    void addSystem(Args &&...args) {
+        m_systems.emplace_back(new SystemType(std::forward<Args>(args)...));
+    }
+
+    template <typename SystemType>
+    SystemType* getSystem() const noexcept {
+        for (const ScopePtr<ISystem>& system : m_systems) {
+            if (SystemType* castedSystem = dynamic_cast<SystemType*>(system.get())) {
+                return castedSystem;
+            }
+        }
+        return nullptr;
+    }
+
+    SystemContainer& getSystems() {
+        return m_systems;
+    }
+
 private:
-    PhysicsSystem  m_physicsSystem;
-    RenderSystem   m_renderSystem;
-    InputSystem    m_inputSystem;
+    SystemContainer m_systems;
 };
+
+using SystemContainer =  std::vector<ScopePtr<ISystem>, StaticAllocator<ScopePtr<ISystem>, MAX_CAP_SYS> >&;
