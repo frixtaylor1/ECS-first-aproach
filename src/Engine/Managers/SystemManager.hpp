@@ -8,26 +8,19 @@
 
 class SystemManager {
 public:
-    SystemManager(PhysicsSystem<FPS_RATE>& physicsSystem, RenderSystem& renderSystem, InputSystem& inputSystem)
+    SystemManager() = default;
+
+    SystemManager(const PhysicsSystem& physicsSystem, const RenderSystem& renderSystem, const InputSystem& inputSystem)
         : m_physicsSystem(physicsSystem), m_renderSystem(renderSystem), m_inputSystem(inputSystem) {}
 
     ~SystemManager() {}
 
+    const RenderSystem&     getRenderSystem()   const { return m_renderSystem;  }
+    const InputSystem&      getInputSystem()    const { return m_inputSystem;   }
+    const PhysicsSystem&    getPhysicsSystem()  const { return m_physicsSystem; }
+    
 private:
-
-    const RenderSystem& getRenderSystem() const {
-        return m_renderSystem;
-    }
-
-    const InputSystem& getInputSystem() const {
-        return m_inputSystem;
-    }
-
-    const PhysicsSystem<FPS_RATE>& getPhysicsSystem() const {
-        return m_physicsSystem;
-    }
-
-    PhysicsSystem<FPS_RATE>& m_physicsSystem;
-    RenderSystem& m_renderSystem;
-    InputSystem& m_inputSystem;
+    PhysicsSystem  m_physicsSystem;
+    RenderSystem   m_renderSystem;
+    InputSystem    m_inputSystem;
 };

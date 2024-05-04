@@ -6,7 +6,6 @@
 #include "./ISystem.hpp"
 #include "./InputSystem.hpp"
 
-template <int FramePerSeconds = 60>
 class PhysicsSystem : implements ISystem {
 public:
     PhysicsSystem(const EntityContainer entities) : m_entities(entities) {}

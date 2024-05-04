@@ -45,17 +45,28 @@ int main(void) {
         entityManager.addComponent<CollisionComponent>(lastInsertId);
 
 
-        PhysicsSystem<FPS_RATE> physicsSys(entityManager.getEntities());
+        PhysicsSystem           physicsSys(entityManager.getEntities());
         RenderSystem            renderSys(entityManager.getEntities());
         InputSystem             inputSys(entityManager.getEntities());
         CollisionSystem         collisionSys(entityManager.getEntities());
 
         // START MAIN ENGINE LOOP. //
         while (!WindowShouldClose()) {
+            /* INPUT SYSTEM */
             inputSys.update();
+            /* INPUT SYSTEM */
+
+            /* PHYSISCS SYSTEM */
             physicsSys.update();
+            /* PHYSISCS SYSTEM */
+
+            /* COLLITION SYSTEM */
             collisionSys.update();
+            /* COLLITION SYSTEM */
+
+            /* RENDER SYSTEM */
             renderSys.update();
+            /* RENDER SYSTEM */
         }
         // END MAIN ENGINE LOOP. //
     CloseWindow();
