@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SCOPEPOINTER_HPP
+#define SCOPEPOINTER_HPP
 
 #include "./ScopePointer.hpp"
 
@@ -48,3 +49,5 @@ template <typename Type, bool doFree>
 SafeUniquePtr<Type, doFree>::operator bool() const noexcept {
     return ptr_ != nullptr;
 }
+
+#endif // SCOPEPOINTER_HPP
