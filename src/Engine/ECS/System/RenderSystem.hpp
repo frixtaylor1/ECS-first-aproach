@@ -10,7 +10,7 @@
 class RenderSystem : implements ISystem
 {
 public:
-    RenderSystem(const EntityContainer entities);
+    RenderSystem(EntityContainer entities);
     virtual ~RenderSystem() {}
     void update();
 

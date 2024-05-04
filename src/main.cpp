@@ -44,23 +44,25 @@ int main(void) {
         size_t idEntityC = entityManager.getLastInsertEntity()->getId(); 
         entityManager.addComponent<PhysicsComponent>(idEntityC, Vector2{0.f, 0.f}, 30.f, 6.f);
 
+
         // SYSTEMS...
         PhysicsSystem   physicsSys(entityManager.getEntities());
         RenderSystem    renderSys(entityManager.getEntities());
         InputSystem     inputSys(entityManager.getEntities());
-        CollisionSystem collisionSys(entityManager.getEntities()); 
+        CollisionSystem collisionSys(entityManager.getEntities());
+
 
         // TEST COLLISION CALLBACK... //
         collisionSys.setCollisionHandler(idEntityA, idEntityB, [](ScopePtr<Entity>& entityA, ScopePtr<Entity>& entityB) {
-            PlayerComponent* playerComponentEntityA = entityA->getComponent<PlayerComponent>(); 
-            EnemyComponent*  enemyComponentEntityB  = entityB->getComponent<EnemyComponent>();
+            PlayerComponent* playerComponentEntityA = entityA->getComponent<PlayerComponent>();
+            EnemyComponent* enemyComponentEntityB = entityB->getComponent<EnemyComponent>();
             if (!playerComponentEntityA && !enemyComponentEntityB) {
-                return ;
+                return;
             }
-        
+
             RectangleDrawableComponent* drawableComponentA = entityA->getComponent<RectangleDrawableComponent>();
             drawableComponentA->color = RED;
-            
+
             RectangleDrawableComponent* drawableComponentB = entityB->getComponent<RectangleDrawableComponent>();
             drawableComponentB->color = GREEN;
 
@@ -70,6 +72,32 @@ int main(void) {
             if (!collA->colliding && !collB->colliding) {
                 drawableComponentA->color = GREEN;
                 drawableComponentB->color = GOLD;
+            }
+        });
+
+        physicsSys.setPhysicsHandler(idEntityA, [](ScopePtr<Entity>& entityA, float delta) {
+            if (!entityA->getComponent<PlayerComponent>()) {
+                return;
+            }
+            InputComponent* inputComponentPlayer                = entityA->getComponent<InputComponent>();
+            PhysicsComponent* physicsComponentPlayer            = entityA->getComponent<PhysicsComponent>();
+            RectangleDrawableComponent* drawableComponentPlayer = entityA->getComponent<RectangleDrawableComponent>();
+
+            std::function<float(PhysicsComponent* component, float delta)>
+                calculateDeltaY = [](PhysicsComponent* component, float delta) {
+                return component->velocity.y * delta + component->speed;
+            };
+
+            std::function<float(PhysicsComponent* component, float delta)>
+                calculateDeltaX = [](PhysicsComponent* component, float delta) {
+                return component->velocity.x * delta + component->speed;
+            };
+
+            if (inputComponentPlayer->keyPressed) {
+                if (inputComponentPlayer->key == KEY_UP)    drawableComponentPlayer->rectangle.y -= calculateDeltaY(physicsComponentPlayer, delta);
+                if (inputComponentPlayer->key == KEY_DOWN)  drawableComponentPlayer->rectangle.y += calculateDeltaY(physicsComponentPlayer, delta);
+                if (inputComponentPlayer->key == KEY_LEFT)  drawableComponentPlayer->rectangle.x -= calculateDeltaX(physicsComponentPlayer, delta);
+                if (inputComponentPlayer->key == KEY_RIGHT) drawableComponentPlayer->rectangle.x += calculateDeltaX(physicsComponentPlayer, delta);
             }
         });
 

@@ -1,6 +1,6 @@
 #include "./RenderSystem.hpp"
 
-RenderSystem::RenderSystem(const EntityContainer entities)
+RenderSystem::RenderSystem(EntityContainer entities)
     : m_entities(entities) {}
 
 void RenderSystem::update() {

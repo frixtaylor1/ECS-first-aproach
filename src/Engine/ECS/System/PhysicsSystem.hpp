@@ -4,28 +4,26 @@
 #include "../Component/LogicComponents.hpp"
 #include "../Component/DrawableComponents.hpp"
 #include "./ISystem.hpp"
-#include "./InputSystem.hpp"
+
+#include <unordered_map>
+#include <functional>
 
 class PhysicsSystem : implements ISystem {
+private:
+    using PhysicsHandler = std::function<void(ScopePtr<Entity>&, float delta)>;
 public:
-    PhysicsSystem(const EntityContainer entities);
+    PhysicsSystem(EntityContainer entities);
     virtual ~PhysicsSystem();
 
     void update();
+    void setPhysicsHandler(size_t entityId, PhysicsHandler handler);
+
 private:
-    void updatePlayer(ScopePtr<Entity>& entity, float delta);
-    void updateEnemy(ScopePtr<Entity>& enemy, float delta);
-
-    RectangleDrawableComponent* isDrawableComponent(ScopePtr<Entity>& entity);
-    InputComponent*             isInputComponent(ScopePtr<Entity>& entity);
-    PhysicsComponent*           isPhysicsComponent(ScopePtr<Entity>& entity);
-    CollisionComponent*         isCollisionComponent(ScopePtr<Entity>& entity);
-    PlayerComponent*            isPlayerEntity(ScopePtr<Entity>& entity);
-
-    float calculateDeltaY(PhysicsComponent* component, float delta);
-    float calculateDeltaX(PhysicsComponent* component, float delta);
+    PhysicsComponent* isPhysicsComponent(ScopePtr<Entity>& entity);
 
 private:
     double          m_lastFrame = GetTime();
+    double          m_deltaTime = 0;
     EntityContainer m_entities;
+    std::unordered_map<int, PhysicsHandler> m_physicsHandlers;
 };
