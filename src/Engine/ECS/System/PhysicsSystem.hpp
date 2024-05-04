@@ -34,14 +34,10 @@ private:
         RectangleDrawableComponent* drawableComponentPlayer   = isDrawableComponent(entity);
 
         if (inputComponentPlayer->keyPressed) {
-            if (inputComponentPlayer->key == KEY_UP)
-                drawableComponentPlayer->rectangle.y -= calculateDeltaY(physicsComponentPlayer, delta);
-            if (inputComponentPlayer->key == KEY_DOWN)
-                drawableComponentPlayer->rectangle.y += calculateDeltaY(physicsComponentPlayer, delta);
-            if (inputComponentPlayer->key == KEY_LEFT)
-                drawableComponentPlayer->rectangle.x -= calculateDeltaX(physicsComponentPlayer, delta);
-            if (inputComponentPlayer->key == KEY_RIGHT)
-                drawableComponentPlayer->rectangle.x += calculateDeltaX(physicsComponentPlayer, delta);
+            if (inputComponentPlayer->key == KEY_UP)    drawableComponentPlayer->rectangle.y -= calculateDeltaY(physicsComponentPlayer, delta);
+            if (inputComponentPlayer->key == KEY_DOWN)  drawableComponentPlayer->rectangle.y += calculateDeltaY(physicsComponentPlayer, delta);
+            if (inputComponentPlayer->key == KEY_LEFT)  drawableComponentPlayer->rectangle.x -= calculateDeltaX(physicsComponentPlayer, delta);
+            if (inputComponentPlayer->key == KEY_RIGHT) drawableComponentPlayer->rectangle.x += calculateDeltaX(physicsComponentPlayer, delta);
         }
             
 /*
