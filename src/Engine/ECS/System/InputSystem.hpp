@@ -10,33 +10,14 @@ class InputSystem : implements ISystem {
 private:
   using Function = std::function<void()>;
 public:
-    InputSystem(EntityContainer entities) : m_entities(entities) {}
-    ~InputSystem() {}
+    InputSystem(EntityContainer entities);
+    virtual ~InputSystem();
 
-    void update() {
-        for (ScopePtr<Entity>& entity : m_entities) {
-            InputComponent* inputComponent = isInputComponent(entity);
-            if (inputComponent) {
-                inputComponent->key = GetKeyPressed();
-                if (IsKeyPressed(inputComponent->key)) {
-                    inputComponent->keyPressed = true;
-                } else {
-                    inputComponent->keyPressed = false;
-                }
-            }
-        }
-    }
-
-    void inputListener(bool isPressed, Function callback) {
-        if (isPressed) {
-            callback();
-        }
-    }
+    void update();
+    void inputListener(bool isPressed, Function callback);
 
 private:
-    InputComponent* isInputComponent(ScopePtr<Entity>& entity) {
-        return &*entity->getComponent<InputComponent>();
-    }
+    InputComponent* isInputComponent(ScopePtr<Entity>& entity);
 
     EntityContainer m_entities;
 };

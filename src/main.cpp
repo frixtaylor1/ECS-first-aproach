@@ -44,15 +44,13 @@ int main(void) {
         size_t idEntityC = entityManager.getLastInsertEntity()->getId(); 
         entityManager.addComponent<PhysicsComponent>(idEntityC, Vector2{0.f, 0.f}, 30.f, 6.f);
 
-
         // SYSTEMS...
         PhysicsSystem   physicsSys(entityManager.getEntities());
         RenderSystem    renderSys(entityManager.getEntities());
         InputSystem     inputSys(entityManager.getEntities());
         CollisionSystem collisionSys(entityManager.getEntities()); 
 
-
-        // TEST COLLISION CALLBACK...
+        // TEST COLLISION CALLBACK... //
         collisionSys.setCollisionHandler(idEntityA, idEntityB, [](ScopePtr<Entity>& entityA, ScopePtr<Entity>& entityB) {
             PlayerComponent* playerComponentEntityA = &*entityA->getComponent<PlayerComponent>(); 
             EnemyComponent*  enemyComponentEntityB  = &*entityB->getComponent<EnemyComponent>();
