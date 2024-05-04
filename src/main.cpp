@@ -27,12 +27,13 @@ int main(void) {
         entityManager.addComponent<MovableComponent>(lastInsertId);
         entityManager.addComponent<InputComponent>(lastInsertId);
         entityManager.addComponent<CollisionComponent>(lastInsertId);
+        entityManager.addComponent<PlayerComponent>(lastInsertId);
 
 
         // ENTITY TWO...
         entityManager.addEntity(new Entity());
         lastInsertId = entityManager.getLastInsertEntity()->getId(); 
-        entityManager.addComponent<RectangleDrawableComponent>(lastInsertId, 10, GetScreenHeight() / 2.0f - 50, 30, 30, GOLD);
+        entityManager.addComponent<RectangleDrawableComponent>(lastInsertId, 10, GetScreenHeight() / 2.0f - 50, 30 * 2, 30 * 2, BLACK);
         entityManager.addComponent<PhysicsComponent>(lastInsertId, Vector2{0.f, 0.f}, 30.f, 6.f);
         entityManager.addComponent<CollisionComponent>(lastInsertId);
 
@@ -49,19 +50,12 @@ int main(void) {
         InputSystem             inputSys(entityManager.getEntities());
         CollisionSystem         collisionSys(entityManager.getEntities());
 
-        double deltaTime = 0.016;
-        double lastFrame = GetTime();
-
         // START MAIN ENGINE LOOP. //
         while (!WindowShouldClose()) {
-            double currentFrame = GetTime();
-            deltaTime = currentFrame - lastFrame;
-            lastFrame = currentFrame;
-
             inputSys.update();
-            physicsSys.update(deltaTime, inputSys);
+            physicsSys.update();
             collisionSys.update();
-            renderSys.render();
+            renderSys.update();
         }
         // END MAIN ENGINE LOOP. //
     CloseWindow();

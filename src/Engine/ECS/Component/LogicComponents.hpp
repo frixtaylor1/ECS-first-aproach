@@ -70,3 +70,14 @@ struct InputComponent : implements IComponent {
     bool keyPressed;
     Key  key;
 };
+
+/**
+ * PlayerComponent structure.
+ * Constructor with parameters... 
+ * 
+ * @param int score
+ */
+struct PlayerComponent : implements IComponent {
+    virtual ~PlayerComponent();
+    int score = 0;
+};

@@ -12,7 +12,7 @@ class RenderSystem : implements ISystem
 public:
     RenderSystem(const EntityContainer entities);
     virtual ~RenderSystem() {}
-    void render();
+    void update();
 
 protected:
     RectangleDrawableComponent* isRectangle(ScopePtr<Entity>& entity);

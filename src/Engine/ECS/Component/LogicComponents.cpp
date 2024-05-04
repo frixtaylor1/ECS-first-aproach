@@ -8,3 +8,5 @@ PhysicsComponent::~PhysicsComponent() {}
 
 CollisionComponent::CollisionComponent(bool colliding) : colliding(colliding) {}
 CollisionComponent::~CollisionComponent() {}
+
+PlayerComponent::~PlayerComponent() {}

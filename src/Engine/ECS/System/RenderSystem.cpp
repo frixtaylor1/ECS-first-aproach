@@ -3,7 +3,7 @@
 RenderSystem::RenderSystem(std::vector<ScopePtr<Entity>, StaticAllocator<Entity, 1024>>& entities)
     : m_entities(entities) {}
 
-void RenderSystem::render() {
+void RenderSystem::update() {
     /*BEGIN DRAWING*/
     BeginDrawing();
         renderLogic();

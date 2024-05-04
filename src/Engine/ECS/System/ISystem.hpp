@@ -4,5 +4,6 @@
 
 interface ISystem {
     virtual ~ISystem();
+    virtual void update() = 0;    
 };
 

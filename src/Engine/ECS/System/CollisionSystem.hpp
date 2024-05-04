@@ -21,13 +21,13 @@ public:
             }
 
             for (ScopePtr<Entity>& entityB : m_entities) {
-                if (*entityA == *entityB) {
+                if (entityA.get()->getId() == entityB.get()->getId()) {
                     continue;
                 }
 
-                CollisionComponent* collisionComponentB      = isCollisionComponent(entityB);
-                RectangleDrawableComponent* rectangleEntityA = isRectangleComponent(entityA);
-                RectangleDrawableComponent* rectangleEntityB = isRectangleComponent(entityB);
+                CollisionComponent*         collisionComponentB = isCollisionComponent(entityB);
+                RectangleDrawableComponent* rectangleEntityA    = isRectangleComponent(entityA);
+                RectangleDrawableComponent* rectangleEntityB    = isRectangleComponent(entityB);
 
 
                 if (!collisionComponentB || !rectangleEntityA || !rectangleEntityB) {
@@ -35,18 +35,18 @@ public:
                 }
 
                 if (CheckCollisionRecs(rectangleEntityA->rectangle, rectangleEntityB->rectangle)) {
+                    rectangleEntityB->color = RED;
+                    rectangleEntityA->color = BLUE;
+
                     collisionComponentA->colliding = true;
                     collisionComponentB->colliding = true;
-                    
-                    rectangleEntityA->color = RED;
-                    rectangleEntityB->color = RED;
+
                     handleCollision(entityA, entityB);
                 } else {
+                    rectangleEntityB->color = GOLD;
+                    rectangleEntityA->color = GREEN;
                     collisionComponentA->colliding = false;
                     collisionComponentB->colliding = false;
-                    
-                    rectangleEntityA->color = GOLD;
-                    rectangleEntityB->color = GOLD;
                 }
             }
         }
