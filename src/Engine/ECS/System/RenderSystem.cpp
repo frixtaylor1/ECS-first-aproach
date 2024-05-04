@@ -22,5 +22,5 @@ void RenderSystem::renderLogic() {
 }
 
 RectangleDrawableComponent* RenderSystem::isRectangle(ScopePtr<Entity>& entity) {
-    return &*entity->getComponent<RectangleDrawableComponent>();
+    return entity->getComponent<RectangleDrawableComponent>();
 }

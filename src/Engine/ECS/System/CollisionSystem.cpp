@@ -58,14 +58,14 @@ void CollisionSystem::handleCollision(ScopePtr<Entity>& entityA, ScopePtr<Entity
 }
 
 PlayerComponent* CollisionSystem::isPlayerComponent(ScopePtr<Entity>& entity) {
-    return &*entity->getComponent<PlayerComponent>();
+    return entity->getComponent<PlayerComponent>();
 }
 
 CollisionComponent* CollisionSystem::isCollisionComponent(ScopePtr<Entity>& entity) {
-    return &*entity->getComponent<CollisionComponent>();
+    return entity->getComponent<CollisionComponent>();
 }
 
 RectangleDrawableComponent* CollisionSystem::isRectangleComponent(ScopePtr<Entity>& entity) {
-    return &*entity->getComponent<RectangleDrawableComponent>();
+    return entity->getComponent<RectangleDrawableComponent>();
 }
 

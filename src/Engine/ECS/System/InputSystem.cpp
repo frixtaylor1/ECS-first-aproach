@@ -23,5 +23,5 @@ void InputSystem::inputListener(bool isPressed, Function callback) {
 }
 
 InputComponent* InputSystem::isInputComponent(ScopePtr<Entity>& entity) {
-    return &*entity->getComponent<InputComponent>();
+    return entity->getComponent<InputComponent>();
 }

@@ -64,23 +64,23 @@ void PhysicsSystem::updateEnemy(ScopePtr<Entity>& enemy, float delta) {
 }
 
 RectangleDrawableComponent* PhysicsSystem::isDrawableComponent(ScopePtr<Entity>& entity) {
-    return &*entity->getComponent<RectangleDrawableComponent>();
+    return entity->getComponent<RectangleDrawableComponent>();
 }
 
 InputComponent* PhysicsSystem::isInputComponent(ScopePtr<Entity>& entity) {
-    return &*entity->getComponent<InputComponent>();
+    return entity->getComponent<InputComponent>();
 }
 
 PhysicsComponent* PhysicsSystem::isPhysicsComponent(ScopePtr<Entity>& entity) {
-    return &*entity->getComponent<PhysicsComponent>();
+    return entity->getComponent<PhysicsComponent>();
 }
 
 CollisionComponent* PhysicsSystem::isCollisionComponent(ScopePtr<Entity>& entity) {
-    return &*entity->getComponent<CollisionComponent>();
+    return entity->getComponent<CollisionComponent>();
 }
 
 PlayerComponent* PhysicsSystem::isPlayerEntity(ScopePtr<Entity>& entity) {
-    return &*entity->getComponent<PlayerComponent>();
+    return entity->getComponent<PlayerComponent>();
 }
 
 float PhysicsSystem::calculateDeltaY(PhysicsComponent* component, float delta) {

@@ -52,20 +52,20 @@ int main(void) {
 
         // TEST COLLISION CALLBACK... //
         collisionSys.setCollisionHandler(idEntityA, idEntityB, [](ScopePtr<Entity>& entityA, ScopePtr<Entity>& entityB) {
-            PlayerComponent* playerComponentEntityA = &*entityA->getComponent<PlayerComponent>(); 
-            EnemyComponent*  enemyComponentEntityB  = &*entityB->getComponent<EnemyComponent>();
+            PlayerComponent* playerComponentEntityA = entityA->getComponent<PlayerComponent>(); 
+            EnemyComponent*  enemyComponentEntityB  = entityB->getComponent<EnemyComponent>();
             if (!playerComponentEntityA && !enemyComponentEntityB) {
                 return ;
             }
         
-            RectangleDrawableComponent* drawableComponentA = &*entityA->getComponent<RectangleDrawableComponent>();
+            RectangleDrawableComponent* drawableComponentA = entityA->getComponent<RectangleDrawableComponent>();
             drawableComponentA->color = RED;
             
-            RectangleDrawableComponent* drawableComponentB = &*entityB->getComponent<RectangleDrawableComponent>();
+            RectangleDrawableComponent* drawableComponentB = entityB->getComponent<RectangleDrawableComponent>();
             drawableComponentB->color = GREEN;
 
-            CollisionComponent* collA = &*entityA->getComponent<CollisionComponent>();
-            CollisionComponent* collB = &*entityB->getComponent<CollisionComponent>();
+            CollisionComponent* collA = entityA->getComponent<CollisionComponent>();
+            CollisionComponent* collB = entityB->getComponent<CollisionComponent>();
 
             if (!collA->colliding && !collB->colliding) {
                 drawableComponentA->color = GREEN;
