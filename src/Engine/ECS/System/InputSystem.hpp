@@ -15,7 +15,8 @@ public:
 
     void update() {
         for (ScopePtr<Entity>& entity : m_entities) {
-            if (InputComponent* inputComponent = isInputComponent(entity)) {
+            InputComponent* inputComponent = isInputComponent(entity);
+            if (inputComponent) {
                 inputComponent->key = GetKeyPressed();
                 if (IsKeyPressed(inputComponent->key)) {
                     inputComponent->keyPressed = true;
@@ -34,10 +35,7 @@ public:
 
 private:
     InputComponent* isInputComponent(ScopePtr<Entity>& entity) {
-        if (auto component = entity.get()->getComponent<InputComponent>()) {
-            return component;
-        }
-        return nullptr;
+        return &*entity->getComponent<InputComponent>();
     }
 
     EntityContainer m_entities;
