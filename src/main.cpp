@@ -5,10 +5,15 @@
 #include "./Engine/ECS/System/CollisionSystem.hpp"
 #include "./Engine/ECS/Component/LogicComponents.hpp"
 #include "./Engine/Managers/EntityManager.hpp"
+#include "./Engine/Utils/Allocators/LinealAllocator.hpp"
 
 #define FPS_RATE 60
 
+
 int main(void) {
+    typedef LinealAllocator<Entity> MyEntityAllocator;
+    MyEntityAllocator entityAllocator;
+
     const int screenWidth   = 800;
     const int screenHeight  = 600;
 
@@ -20,7 +25,7 @@ int main(void) {
         SetTargetFPS(FPS_RATE);
 
         // ENTITY ONE...
-        entityManager.addEntity(new Entity());
+        entityManager.addEntity(new (entityAllocator) Entity()); 
         size_t idEntityA = entityManager.getLastInsertEntity()->getId(); 
         entityManager.addComponent<RectangleDrawableComponent>(idEntityA, 10, GetScreenHeight() / 2.0f - 50, 30, 30, GOLD);
         entityManager.addComponent<PhysicsComponent>(idEntityA, Vector2{0.f, 0.f}, 30.f, 6.f);
@@ -31,7 +36,7 @@ int main(void) {
 
 
         // ENTITY TWO...
-        entityManager.addEntity(new Entity());
+        entityManager.addEntity(new (entityAllocator) Entity());
         size_t idEntityB = entityManager.getLastInsertEntity()->getId(); 
         entityManager.addComponent<RectangleDrawableComponent>(idEntityB, GetScreenWidth() - (30 * 2) - 10, GetScreenHeight() / 2.0f - 50, 30 * 2, 30 * 2, BLACK);
         entityManager.addComponent<PhysicsComponent>(idEntityB, Vector2{0.f, 0.f}, 30.f, 6.f);
@@ -40,7 +45,7 @@ int main(void) {
 
 
         // ENTITY THREE...
-        entityManager.addEntity(new Entity());
+        entityManager.addEntity(new (entityAllocator) Entity());
         size_t idEntityC = entityManager.getLastInsertEntity()->getId(); 
         entityManager.addComponent<PhysicsComponent>(idEntityC, Vector2{0.f, 0.f}, 30.f, 6.f);
 
@@ -53,9 +58,9 @@ int main(void) {
 
 
         // TEST COLLISION CALLBACK... //
-        collisionSys.setCollisionHandler(idEntityA, idEntityB, [](ScopePtr<Entity>& entityA, ScopePtr<Entity>& entityB) {
+        collisionSys.setCollisionHandler(idEntityA, idEntityB, [&](ScopePtr<Entity>& entityA, ScopePtr<Entity>& entityB) {
             PlayerComponent* playerComponentEntityA = entityA->getComponent<PlayerComponent>();
-            EnemyComponent* enemyComponentEntityB = entityB->getComponent<EnemyComponent>();
+            EnemyComponent*  enemyComponentEntityB  = entityB->getComponent<EnemyComponent>();
             if (!playerComponentEntityA && !enemyComponentEntityB) {
                 return;
             }
@@ -68,6 +73,9 @@ int main(void) {
 
             CollisionComponent* collA = entityA->getComponent<CollisionComponent>();
             CollisionComponent* collB = entityB->getComponent<CollisionComponent>();
+            if (collA->colliding && collB->colliding) {
+                entityManager.removeEntity(idEntityA);
+            }
 
             if (!collA->colliding && !collB->colliding) {
                 drawableComponentA->color = GREEN;
@@ -118,6 +126,8 @@ int main(void) {
             /* RENDER SYSTEM */
             renderSys.update();
             /* RENDER SYSTEM */
+
+            entityManager.removeMarkedEntities();
         }
         // END MAIN ENGINE LOOP. //
     CloseWindow();

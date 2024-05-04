@@ -11,7 +11,7 @@
  *  @param size_t   - Capacity
  */
 template <typename T, std::size_t Capacity> 
-class StaticAllocator {
+class StaticVectorAllocator {
 public:
     using value_type        = T;
     using pointer           = T*;
@@ -22,13 +22,13 @@ public:
     using difference_type   = std::ptrdiff_t;
 
     template <typename U> struct rebind {
-        using other = StaticAllocator<U, Capacity>;
+        using other = StaticVectorAllocator<U, Capacity>;
     };
 
-    StaticAllocator() noexcept {}
+    StaticVectorAllocator() noexcept {}
 
     template <typename U>
-    StaticAllocator(const StaticAllocator<U, Capacity>&) noexcept {}
+    StaticVectorAllocator(const StaticVectorAllocator<U, Capacity>&) noexcept {}
 
     pointer allocate(size_type n) {
         if (n > Capacity) {
@@ -48,11 +48,11 @@ private:
 };
 
 template <typename T, std::size_t Capacity>
-bool operator == (const StaticAllocator<T, Capacity>&, const StaticAllocator<T, Capacity>&) noexcept {
+bool operator == (const StaticVectorAllocator<T, Capacity>&, const StaticVectorAllocator<T, Capacity>&) noexcept {
     return true;
 }
 
 template <typename T, std::size_t Capacity> 
-bool operator != (const StaticAllocator<T, Capacity>&, const StaticAllocator<T, Capacity>&) noexcept {
+bool operator != (const StaticVectorAllocator<T, Capacity>&, const StaticVectorAllocator<T, Capacity>&) noexcept {
     return false;
 }

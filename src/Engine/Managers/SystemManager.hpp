@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Utils/Allocators/StaticAllocator.hpp"
+#include "../Utils/Allocators/StaticVectorAllocator.hpp"
 #include "../ECS/System/ISystem.hpp"
 
 #include <vector>
@@ -9,7 +9,7 @@
 
 class SystemManager {
 private:
-    using SystemContainer = std::vector<ScopePtr<ISystem>, StaticAllocator<ScopePtr<ISystem>, MAX_CAP_SYS> >;
+    using SystemContainer = std::vector<ScopePtr<ISystem>, StaticVectorAllocator<ScopePtr<ISystem>, MAX_CAP_SYS> >;
 public:
     SystemManager() = default;
     ~SystemManager() {}
@@ -37,4 +37,4 @@ private:
     SystemContainer m_systems;
 };
 
-using SystemContainer =  std::vector<ScopePtr<ISystem>, StaticAllocator<ScopePtr<ISystem>, MAX_CAP_SYS> >&;
+using SystemContainer =  std::vector<ScopePtr<ISystem>, StaticVectorAllocator<ScopePtr<ISystem>, MAX_CAP_SYS> >&;

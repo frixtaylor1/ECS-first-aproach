@@ -1,12 +1,13 @@
 #pragma once
 
 #include "../ECS/Entity/Entity.hpp"
+#include <algorithm>
 
 template <size_t MaxCapcity = 1024>
 class EntityManager {
 private:
     enum { ENTITIES_MAX_CAPACITY = MaxCapcity };
-    using Container = std::vector<ScopePtr<Entity>, StaticAllocator<Entity, ENTITIES_MAX_CAPACITY>>;
+    using Container = std::vector<ScopePtr<Entity, false>, StaticVectorAllocator<Entity, ENTITIES_MAX_CAPACITY>>;
 public:
 
     EntityManager() = default;
@@ -34,17 +35,34 @@ public:
         }
     }
 
+    void removeEntity(size_t entityId) {
+        for (ScopePtr<Entity>& entity : m_entities) {
+            if (entity->getId() == entityId) {
+                entity->markForRemoval();
+                break;
+            }
+        }
+    }
+
+    void removeMarkedEntities() {
+        auto it = std::remove_if(m_entities.begin(), m_entities.end(),
+            [](const ScopePtr<Entity>& entity) {
+                return entity->isMarkedForRemoval();
+            });
+        m_entities.erase(it, m_entities.end());
+    }
+
     ScopePtr<Entity>& getLastInsertEntity() {
         return m_entities.back();
     }
 
     ScopePtr<Entity>& getEntityById(size_t id) {
         for (ScopePtr<Entity>& entity : m_entities) {
-            if (*entity == id) {
+            if (entity->getId() == id) {
                 return entity;
             }
         }
-        m_entities.back();
+        return m_entities.end();
     }
 
     Container& getEntities() {

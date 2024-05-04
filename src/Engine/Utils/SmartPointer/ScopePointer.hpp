@@ -1,8 +1,6 @@
 #pragma once
 
-#define method_removed =delete
-
-template <typename Type>
+template <typename Type, bool doFree>
 class SafeUniquePtr {
 public:
     explicit SafeUniquePtr(Type* ptr = nullptr);
@@ -20,9 +18,10 @@ public:
 
 private:
     Type* ptr_;
+    bool shouldDelete = doFree;
 };
 
 #include "./ScopePointerImpl.hpp"
 
-template <typename Type>
-using ScopePtr = SafeUniquePtr<Type>;
+template <typename Type, bool doFree = false>
+using ScopePtr = SafeUniquePtr<Type, doFree>;
