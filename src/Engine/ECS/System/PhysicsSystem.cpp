@@ -21,6 +21,10 @@ void PhysicsSystem::update() {
             continue;
         }
 
+        for (auto handler : m_physicsComponentHandler) {
+            handler(entity, m_deltaTime);
+        }
+
         if (m_physicsHandlers.find(entity->getId()) != m_physicsHandlers.end()) {
             m_physicsHandlers[entity->getId()](entity, m_deltaTime);
         }
@@ -29,6 +33,10 @@ void PhysicsSystem::update() {
 
 void PhysicsSystem::setPhysicsHandler(size_t entityId, PhysicsHandler handler) {
     m_physicsHandlers[entityId] = handler;
+}
+
+void PhysicsSystem::setPhysicsHandler(PhysicsHandler handler) {
+    m_physicsComponentHandler.push_back(handler);
 }
 
 PhysicsComponent* PhysicsSystem::isPhysicsComponent(ScopePtr<Entity>& entity) {

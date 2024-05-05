@@ -24,6 +24,7 @@ public:
 
     void update();
     void setPhysicsHandler(size_t entityId, PhysicsHandler handler);
+    void setPhysicsHandler(PhysicsHandler handler);
 
 private:
     PhysicsComponent* isPhysicsComponent(ScopePtr<Entity>& entity);
@@ -32,6 +33,7 @@ private:
     double          m_lastFrame = GetTime();
     double          m_deltaTime = 0;
     EntityContainer m_entities;
+    std::vector<PhysicsHandler>    m_physicsComponentHandler;
     std::unordered_map<int, PhysicsHandler> m_physicsHandlers;
 };
 
