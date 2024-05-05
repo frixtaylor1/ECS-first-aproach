@@ -34,7 +34,7 @@ private:
 
 private:
     EntityContainer m_entities;
-    std::vector<RenderHandler, StaticVectorAllocator<RenderHandler, 124>> m_renderHandlerByComponent;
+    std::vector<RenderHandler> m_renderHandlerByComponent;
     std::unordered_map<int, RenderHandler>  m_renderHandlers;
 };
 

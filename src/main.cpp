@@ -11,20 +11,41 @@
 
 
 int main(void) {
-    typedef LinealAllocator<Entity> MyEntityAllocator;
-    MyEntityAllocator entityAllocator;
-
     const int screenWidth   = 800;
     const int screenHeight  = 600;
 
+    LinealAllocator<Entity> allocator;
+
     EntityManager entityManager;
+
 
     // OPEN WINDOW  //
     // INITIALIZING //
     InitWindow(screenWidth, screenHeight, "raylib and ECS example");
         SetTargetFPS(FPS_RATE);
+        std::cout << "WEIGHT OF A ENTITY: " << sizeof(ScopePtr<Entity>) << std::endl; 
 
-        // ENTITY ONE...
+
+        for (size_t idxEntity = 0; idxEntity < 100000; idxEntity++) {
+            // Generate random position and size for the entity
+            int posX = rand() % screenWidth;
+            int posY = rand() % screenHeight;
+            Color randomColor;
+            randomColor.r = rand() % 256;
+            randomColor.g = rand() % 256;
+            randomColor.b = rand() % 256;
+            randomColor.a = 255;
+            entityManager.addEntity(new (allocator) Entity()); 
+            size_t lasInsertId = entityManager.getLastInsertEntity()->getId();
+            entityManager.addComponent<RectangleDrawableComponent>(lasInsertId, posX, posY, 30, 30, Color{
+                randomColor.r,
+                randomColor.g,
+                randomColor.b,
+                randomColor.a
+            });
+        }
+
+/*         // ENTITY ONE...
         entityManager.addEntity(new (entityAllocator) Entity()); 
         size_t idEntityA = entityManager.getLastInsertEntity()->getId(); 
         entityManager.addComponent<RectangleDrawableComponent>(idEntityA, 10, GetScreenHeight() / 2.0f - 50, 30, 30, GOLD);
@@ -42,20 +63,20 @@ int main(void) {
         entityManager.addComponent<PhysicsComponent>(idEntityB, Vector2{0.f, 0.f}, 30.f, 6.f);
         entityManager.addComponent<CollisionComponent>(idEntityB);
         entityManager.addComponent<EnemyComponent>(idEntityB);
-
-
+ */
+/* 
         // ENTITY THREE...
         entityManager.addEntity(new (entityAllocator) Entity());
         size_t idEntityC = entityManager.getLastInsertEntity()->getId(); 
         entityManager.addComponent<PhysicsComponent>(idEntityC, Vector2{0.f, 0.f}, 30.f, 6.f);
-
+ */
 
         // SYSTEMS...
         PhysicsSystem   physicsSys(entityManager.getEntities());
         RenderSystem    renderSys(entityManager.getEntities());
         InputSystem     inputSys(entityManager.getEntities());
         CollisionSystem collisionSys(entityManager.getEntities());
-
+/* 
         // TEST RENDER CALLBACK... //
         renderSys.setRenderHandler(idEntityA, [](ScopePtr<Entity>& entity){
             RectangleDrawableComponent* rectangleEntity = entity->getComponent<RectangleDrawableComponent>();
@@ -64,7 +85,7 @@ int main(void) {
                 DrawRectangleRec(rectangleEntity->rectangle, rectangleEntity->color);
             }
         }); 
-
+ */
         renderSys.setRenderHandler([](ScopePtr<Entity>& entity){
             if (auto&& rectangleEntity = entity->getComponent<RectangleDrawableComponent>()) {
                 DrawRectangleRec(rectangleEntity->rectangle, rectangleEntity->color);
@@ -72,7 +93,7 @@ int main(void) {
         });
 
 
-        // TEST COLLISION CALLBACK... //
+/*         // TEST COLLISION CALLBACK... //
         collisionSys.setCollisionHandler(idEntityA, idEntityB, [&entityManager, &idEntityA](ScopePtr<Entity>& entityA, ScopePtr<Entity>& entityB) {
             PlayerComponent* playerComponentEntityA = entityA->getComponent<PlayerComponent>();
             EnemyComponent*  enemyComponentEntityB  = entityB->getComponent<EnemyComponent>();
@@ -96,9 +117,9 @@ int main(void) {
                 drawableComponentA->color = GREEN;
                 drawableComponentB->color = GOLD;
             }
-        });
+        }); */
 
-        physicsSys.setPhysicsHandler(idEntityA, [](ScopePtr<Entity>& entityA, float delta) {
+/*         physicsSys.setPhysicsHandler(idEntityA, [](ScopePtr<Entity>& entityA, float delta) {
             if (!entityA->getComponent<PlayerComponent>()) {
                 return;
             }
@@ -122,7 +143,7 @@ int main(void) {
                 if (inputComponentPlayer->key == KEY_LEFT)  drawableComponentPlayer->rectangle.x -= calculateDeltaX(physicsComponentPlayer, delta);
                 if (inputComponentPlayer->key == KEY_RIGHT) drawableComponentPlayer->rectangle.x += calculateDeltaX(physicsComponentPlayer, delta);
             }
-        });
+        }); */
 
         // START MAIN ENGINE LOOP. //
         while (!WindowShouldClose()) {

@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "../../Utils/Allocators/StaticVectorAllocator.hpp"
 #include "../Component/IComponent.hpp"
 
 #include <cassert>
@@ -19,7 +18,7 @@
 class Entity {
 private:
     enum { COMPONENTS_MAX_CAPACITY = ENTITY_COMPONENTS_CAPACITY };
-    using ComponentContainer = std::vector<ScopePtr<IComponent, true>, StaticVectorAllocator<ScopePtr<IComponent, true>, COMPONENTS_MAX_CAPACITY> >;
+    using ComponentContainer = std::vector<ScopePtr<IComponent>>;
 public:
     Entity();
     virtual ~Entity();
@@ -30,7 +29,7 @@ public:
 
     template <typename ComponentType>
     ComponentType* getComponent() const noexcept {
-        for (const ScopePtr<IComponent, true>& component : m_components) {
+        for (const ScopePtr<IComponent>& component : m_components) {
             if (ComponentType* castedComponent = dynamic_cast<ComponentType*>(component.get())) {
                 return castedComponent;
             }
@@ -39,8 +38,8 @@ public:
     }
 
     template <typename ComponentType, typename... Args>
-    void addComponent(Args &&...args) {
-        assert(m_components.size() < COMPONENTS_MAX_CAPACITY && "Error, [Capacity] of entity component vector exceded!");
+    void addComponent(Args&&... args) {
+        assert(m_components.size() < COMPONENTS_MAX_CAPACITY && "Error, capacity of entity component vector exceeded!");
         m_components.emplace_back(new ComponentType(std::forward<Args>(args)...));
     }
 
@@ -59,7 +58,7 @@ private:
     bool                m_markedForRemoval = false;
 };
 
-using EntityContainer = std::vector<ScopePtr<Entity>, StaticVectorAllocator<Entity, 1024>>&;
+using EntityContainer = std::vector<ScopePtr<Entity>>&;
 
 /**  
  * MIT License

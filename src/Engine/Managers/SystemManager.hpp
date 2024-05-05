@@ -8,16 +8,13 @@
 
 #pragma once
 
-#include "../Utils/Allocators/StaticVectorAllocator.hpp"
 #include "../ECS/System/ISystem.hpp"
 
 #include <vector>
 
-#define MAX_CAP_SYS 10
-
 class SystemManager {
 private:
-    using SystemContainer = std::vector<ScopePtr<ISystem>, StaticVectorAllocator<ScopePtr<ISystem>, MAX_CAP_SYS> >;
+    using SystemContainer = std::vector<ScopePtr<ISystem>>;
 public:
     SystemManager();
     ~SystemManager();
@@ -36,7 +33,7 @@ private:
 
 #include "./SystemManagerImp.hpp"
 
-using SystemContainer =  std::vector<ScopePtr<ISystem>, StaticVectorAllocator<ScopePtr<ISystem>, MAX_CAP_SYS> >&;
+using SystemContainer =  std::vector<ScopePtr<ISystem>>&;
 
 /**  
  * MIT License

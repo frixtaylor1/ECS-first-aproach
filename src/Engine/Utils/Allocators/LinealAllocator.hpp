@@ -12,7 +12,7 @@
 #include <cstddef>
 #include <array>
 
-template<class ItemType, size_t CAP_ARENA = 1024>
+template<class ItemType, size_t CAP_ARENA = 100000>
 class LinealAllocator {
 public:
     using value_type = ItemType;
@@ -31,7 +31,7 @@ public:
     void        reset() noexcept;
 
 private:
-    enum { MAX_CAP_ARENA = CAP_ARENA };
+    enum { MAX_CAP_ARENA = sizeof(ItemType) * CAP_ARENA };
     static constexpr std::size_t ARENA_SIZE = MAX_CAP_ARENA;
     static char m_memory[ARENA_SIZE];
     static std::size_t m_nextPosition;

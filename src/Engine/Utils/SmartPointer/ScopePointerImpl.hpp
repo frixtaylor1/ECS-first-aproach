@@ -11,26 +11,26 @@
 
 #include "./ScopePointer.hpp"
 
-template <typename Type, bool doFree>
-SafeUniquePtr<Type, doFree>::SafeUniquePtr(Type* ptr) : ptr_(ptr) {}
+template <typename Type, bool isOwner>
+SafeUniquePtr<Type, isOwner>::SafeUniquePtr(Type* ptr) : ptr_(ptr) {}
 
-template <typename Type, bool doFree>
-SafeUniquePtr<Type, doFree>::~SafeUniquePtr() {
-    if (ptr_ && shouldDelete) {
+template <typename Type, bool isOwner>
+SafeUniquePtr<Type, isOwner>::~SafeUniquePtr() {
+    if (ptr_ && isOwner) {
         delete ptr_;
     }
     ptr_ = nullptr;
 }
 
-template <typename Type, bool doFree>
-SafeUniquePtr<Type, doFree>::SafeUniquePtr(SafeUniquePtr&& other) noexcept : ptr_(other.ptr_) {
+template <typename Type, bool isOwner>
+SafeUniquePtr<Type, isOwner>::SafeUniquePtr(SafeUniquePtr&& other) noexcept : ptr_(other.ptr_) {
     other.ptr_ = nullptr;
 }
 
-template <typename Type, bool doFree>
-SafeUniquePtr<Type, doFree>& SafeUniquePtr<Type, doFree>::operator=(SafeUniquePtr&& other) noexcept {
+template <typename Type, bool isOwner>
+SafeUniquePtr<Type, isOwner>& SafeUniquePtr<Type, isOwner>::operator=(SafeUniquePtr&& other) noexcept {
     if (this != &other) {
-        if (shouldDelete) {
+        if (isOwner) {
             delete ptr_;
         }
         ptr_ = other.ptr_;
@@ -39,23 +39,23 @@ SafeUniquePtr<Type, doFree>& SafeUniquePtr<Type, doFree>::operator=(SafeUniquePt
     return *this;
 }
 
-template <typename Type, bool doFree>
-Type* SafeUniquePtr<Type, doFree>::get() const noexcept {
+template <typename Type, bool isOwner>
+Type* SafeUniquePtr<Type, isOwner>::get() const noexcept {
     return ptr_;
 }
 
-template <typename Type, bool doFree>
-Type& SafeUniquePtr<Type, doFree>::operator*() const noexcept {
+template <typename Type, bool isOwner>
+Type& SafeUniquePtr<Type, isOwner>::operator*() const noexcept {
     return *ptr_;
 }
 
-template <typename Type, bool doFree>
-Type* SafeUniquePtr<Type, doFree>::operator->() const noexcept {
+template <typename Type, bool isOwner>
+Type* SafeUniquePtr<Type, isOwner>::operator->() const noexcept {
     return ptr_;
 }
 
-template <typename Type, bool doFree>
-SafeUniquePtr<Type, doFree>::operator bool() const noexcept {
+template <typename Type, bool isOwner>
+SafeUniquePtr<Type, isOwner>::operator bool() const noexcept {
     return ptr_ != nullptr;
 }
 

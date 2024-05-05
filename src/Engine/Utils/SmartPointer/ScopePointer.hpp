@@ -8,7 +8,7 @@
 
 #pragma once
 
-template <typename Type, bool doFree>
+template <typename Type, bool isOwner = true>
 class SafeUniquePtr {
 public:
     explicit SafeUniquePtr(Type* ptr = nullptr);
@@ -26,13 +26,12 @@ public:
 
 private:
     Type* ptr_;
-    bool shouldDelete = doFree;
 };
 
 #include "./ScopePointerImpl.hpp"
 
-template <typename Type, bool doFree = false>
-using ScopePtr = SafeUniquePtr<Type, doFree>;
+template <typename Type, bool isOwner = false>
+using ScopePtr = SafeUniquePtr<Type, isOwner>;
 
 /**  
  * MIT License
