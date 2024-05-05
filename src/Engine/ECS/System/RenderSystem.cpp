@@ -23,14 +23,32 @@ void RenderSystem::renderLogic() {
     ClearBackground(DARKGRAY);
 
     for (ScopePtr<Entity>& entity : m_entities) {
-        if (RectangleDrawableComponent* rectangleEntity = isRectangle(entity)) {
-            DrawRectangleRec(rectangleEntity->rectangle, rectangleEntity->color);
+        if (!isRenderable(entity)) {
+            continue ;
+        }
+
+        for (auto&& renderHandler : m_renderHandlerByComponent) {
+            renderHandler(entity);
+        }
+
+        std::function<void(ScopePtr<Entity>&)> handler = m_renderHandlers[entity->getId()];
+        if (handler) {
+            handler(entity);
         }
     }
 }
 
-RectangleDrawableComponent* RenderSystem::isRectangle(ScopePtr<Entity>& entity) {
-    return entity->getComponent<RectangleDrawableComponent>();
+void RenderSystem::setRenderHandler(size_t entityId, RenderHandler handler) {
+    m_renderHandlers[entityId] = handler;
+}
+
+
+void RenderSystem::setRenderHandler(RenderHandler handler) {
+    m_renderHandlerByComponent.push_back(handler);
+}
+
+IDrawableComponent* RenderSystem::isRenderable(ScopePtr<Entity>& entity){
+    return entity->getComponent<IDrawableComponent>();
 }
 
 /**  

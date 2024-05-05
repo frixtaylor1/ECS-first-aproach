@@ -56,9 +56,24 @@ int main(void) {
         InputSystem     inputSys(entityManager.getEntities());
         CollisionSystem collisionSys(entityManager.getEntities());
 
+        // TEST RENDER CALLBACK... //
+        renderSys.setRenderHandler(idEntityA, [](ScopePtr<Entity>& entity){
+            RectangleDrawableComponent* rectangleEntity = entity->getComponent<RectangleDrawableComponent>();
+            
+            if (rectangleEntity) {
+                DrawRectangleRec(rectangleEntity->rectangle, rectangleEntity->color);
+            }
+        }); 
+
+        renderSys.setRenderHandler([](ScopePtr<Entity>& entity){
+            if (auto&& rectangleEntity = entity->getComponent<RectangleDrawableComponent>()) {
+                DrawRectangleRec(rectangleEntity->rectangle, rectangleEntity->color);
+            }
+        });
+
 
         // TEST COLLISION CALLBACK... //
-        collisionSys.setCollisionHandler(idEntityA, idEntityB, [&](ScopePtr<Entity>& entityA, ScopePtr<Entity>& entityB) {
+        collisionSys.setCollisionHandler(idEntityA, idEntityB, [&entityManager, &idEntityA](ScopePtr<Entity>& entityA, ScopePtr<Entity>& entityB) {
             PlayerComponent* playerComponentEntityA = entityA->getComponent<PlayerComponent>();
             EnemyComponent*  enemyComponentEntityB  = entityB->getComponent<EnemyComponent>();
             if (!playerComponentEntityA && !enemyComponentEntityB) {
@@ -87,8 +102,8 @@ int main(void) {
             if (!entityA->getComponent<PlayerComponent>()) {
                 return;
             }
-            InputComponent* inputComponentPlayer                = entityA->getComponent<InputComponent>();
-            PhysicsComponent* physicsComponentPlayer            = entityA->getComponent<PhysicsComponent>();
+            InputComponent*             inputComponentPlayer    = entityA->getComponent<InputComponent>();
+            PhysicsComponent*           physicsComponentPlayer  = entityA->getComponent<PhysicsComponent>();
             RectangleDrawableComponent* drawableComponentPlayer = entityA->getComponent<RectangleDrawableComponent>();
 
             std::function<float(PhysicsComponent* component, float delta)>

@@ -54,6 +54,11 @@ void EntityManager<MaxCapacity>::removeEntity(size_t entityId) {
 }
 
 template <size_t MaxCapacity>
+void EntityManager<MaxCapacity>::removeEntity(const ScopePtr<Entity>& entity) {
+    removeEntity(entity->getId());
+}
+
+template <size_t MaxCapacity>
 void EntityManager<MaxCapacity>::update() {
     removeMarkedEntities();
 }
@@ -79,7 +84,7 @@ ScopePtr<Entity>& EntityManager<MaxCapacity>::getEntityById(size_t id) {
             return entity;
         }
     }
-    return m_entities.end();
+    return m_entities.back();
 }
 
 template <size_t MaxCapacity>

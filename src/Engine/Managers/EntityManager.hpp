@@ -61,6 +61,16 @@ public:
     void removeEntity(size_t entityId);
 
     /**
+     * removeEntity: this member function mark an entity to be removed.
+     * The entity is not removed till the execution of update() function member.
+     * 
+     * @param ScopePtr<Entity>& entity
+     * 
+     * @return nothing.
+     */
+    void removeEntity(const ScopePtr<Entity>& entity);
+
+    /**
      * update: Updates the state of the entity container {m_entities}. 
      */
     void update();

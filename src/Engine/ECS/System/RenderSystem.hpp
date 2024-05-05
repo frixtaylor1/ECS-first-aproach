@@ -11,23 +11,33 @@
 #include <vector>
 
 #include "../Entity/Entity.hpp"
+#include "../Component/IComponent.hpp"
 #include "../Component/DrawableComponents.hpp"
-
 #include "./ISystem.hpp"
+
+#include <unordered_map>
+#include <functional>
 
 class RenderSystem : implements ISystem
 {
+private:
+    using RenderHandler = std::function<void(ScopePtr<Entity>&)>;
 public:
     RenderSystem(EntityContainer entities);
     virtual ~RenderSystem() {}
-    void update();
 
-protected:
-    RectangleDrawableComponent* isRectangle(ScopePtr<Entity>& entity);
+    void update();
+    void setRenderHandler(size_t entityId, RenderHandler handler);
+    void setRenderHandler(RenderHandler handler);
 
 private:
     void renderLogic();
+    IDrawableComponent* isRenderable(ScopePtr<Entity>& entity);
+
+private:
     EntityContainer m_entities;
+    std::vector<RenderHandler, StaticVectorAllocator<RenderHandler, 124>> m_renderHandlerByComponent;
+    std::unordered_map<int, RenderHandler>  m_renderHandlers;
 };
 
 /**  
