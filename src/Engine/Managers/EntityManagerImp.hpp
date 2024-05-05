@@ -3,17 +3,20 @@
 
 #include "EntityManager.hpp"
 
-template <size_t MaxCapcity>
-EntityManager<MaxCapcity>::EntityManager() = default;
+template <size_t MaxCapacity>
+EntityManager<MaxCapacity>::EntityManager() = default;
 
-template <size_t MaxCapcity>
-void EntityManager<MaxCapcity>::addEntity(Entity* entity) {
+template <size_t MaxCapacity>
+EntityManager<MaxCapacity>::~EntityManager() = default;
+
+template <size_t MaxCapacity>
+void EntityManager<MaxCapacity>::addEntity(Entity* entity) {
     m_entities.emplace_back(entity);
 }
 
-template <size_t MaxCapcity>
+template <size_t MaxCapacity>
 template <typename ComponentType, typename... Args>
-void EntityManager<MaxCapcity>::addComponent(size_t entityId, Args &&...args) {
+void EntityManager<MaxCapacity>::addComponent(size_t entityId, Args &&...args) {
     for (ScopePtr<Entity>& entity : m_entities) {
         if (*entity == entityId) {
             entity->addComponent<ComponentType>(std::forward<Args>(args)...);
@@ -22,9 +25,9 @@ void EntityManager<MaxCapcity>::addComponent(size_t entityId, Args &&...args) {
     }
 }
 
-template <size_t MaxCapcity>
+template <size_t MaxCapacity>
 template <typename ComponentType, typename... Args>
-void EntityManager<MaxCapcity>::addComponent(ScopePtr<Entity>& entity, Args &&...args) {
+void EntityManager<MaxCapacity>::addComponent(ScopePtr<Entity>& entity, Args &&...args) {
     for (ScopePtr<Entity>& entity : m_entities) {
         if (*entity == *entity) {
             entity->addComponent<ComponentType>(std::forward<Args>(args)...);
@@ -32,8 +35,8 @@ void EntityManager<MaxCapcity>::addComponent(ScopePtr<Entity>& entity, Args &&..
     }
 }
 
-template <size_t MaxCapcity>
-void EntityManager<MaxCapcity>::removeEntity(size_t entityId) {
+template <size_t MaxCapacity>
+void EntityManager<MaxCapacity>::removeEntity(size_t entityId) {
     for (ScopePtr<Entity>& entity : m_entities) {
         if (entity->getId() == entityId) {
             entity->markForRemoval();
@@ -42,8 +45,13 @@ void EntityManager<MaxCapcity>::removeEntity(size_t entityId) {
     }
 }
 
-template <size_t MaxCapcity>
-void EntityManager<MaxCapcity>::removeMarkedEntities() {
+template <size_t MaxCapacity>
+void EntityManager<MaxCapacity>::update() {
+    removeMarkedEntities();
+}
+
+template <size_t MaxCapacity>
+void EntityManager<MaxCapacity>::removeMarkedEntities() {
     auto it = std::remove_if(m_entities.begin(), m_entities.end(),
         [](const ScopePtr<Entity>& entity) {
             return entity->isMarkedForRemoval();
@@ -51,13 +59,13 @@ void EntityManager<MaxCapcity>::removeMarkedEntities() {
     m_entities.erase(it, m_entities.end());
 }
 
-template <size_t MaxCapcity>
-ScopePtr<Entity>& EntityManager<MaxCapcity>::getLastInsertEntity() {
+template <size_t MaxCapacity>
+ScopePtr<Entity>& EntityManager<MaxCapacity>::getLastInsertEntity() {
     return m_entities.back();
 }
 
-template <size_t MaxCapcity>
-ScopePtr<Entity>& EntityManager<MaxCapcity>::getEntityById(size_t id) {
+template <size_t MaxCapacity>
+ScopePtr<Entity>& EntityManager<MaxCapacity>::getEntityById(size_t id) {
     for (ScopePtr<Entity>& entity : m_entities) {
         if (entity->getId() == id) {
             return entity;
@@ -66,8 +74,8 @@ ScopePtr<Entity>& EntityManager<MaxCapcity>::getEntityById(size_t id) {
     return m_entities.end();
 }
 
-template <size_t MaxCapcity>
-typename EntityManager<MaxCapcity>::Container& EntityManager<MaxCapcity>::getEntities() {
+template <size_t MaxCapacity>
+typename EntityManager<MaxCapacity>::Container& EntityManager<MaxCapacity>::getEntities() {
     return m_entities;
 }
 

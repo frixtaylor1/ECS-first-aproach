@@ -127,7 +127,7 @@ int main(void) {
             renderSys.update();
             /* RENDER SYSTEM */
 
-            entityManager.removeMarkedEntities();
+            entityManager.update();
         }
         // END MAIN ENGINE LOOP. //
     CloseWindow();

@@ -11,30 +11,21 @@ class SystemManager {
 private:
     using SystemContainer = std::vector<ScopePtr<ISystem>, StaticVectorAllocator<ScopePtr<ISystem>, MAX_CAP_SYS> >;
 public:
-    SystemManager() = default;
-    ~SystemManager() {}
+    SystemManager();
+    ~SystemManager();
 
     template <typename SystemType, typename... Args>
-    void addSystem(Args &&...args) {
-        m_systems.emplace_back(new SystemType(std::forward<Args>(args)...));
-    }
+    void addSystem(Args &&...args);
 
     template <typename SystemType>
-    SystemType* getSystem() const noexcept {
-        for (const ScopePtr<ISystem>& system : m_systems) {
-            if (SystemType* castedSystem = dynamic_cast<SystemType*>(system.get())) {
-                return castedSystem;
-            }
-        }
-        return nullptr;
-    }
+    SystemType* getSystem() const noexcept;
 
-    SystemContainer& getSystems() {
-        return m_systems;
-    }
+    SystemContainer& getSystems();
 
 private:
     SystemContainer m_systems;
 };
+
+#include "./SystemManagerImp.hpp"
 
 using SystemContainer =  std::vector<ScopePtr<ISystem>, StaticVectorAllocator<ScopePtr<ISystem>, MAX_CAP_SYS> >&;
