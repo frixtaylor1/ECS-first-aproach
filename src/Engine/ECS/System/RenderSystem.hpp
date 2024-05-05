@@ -11,8 +11,6 @@
 #include <vector>
 
 #include "../Entity/Entity.hpp"
-#include "../Component/IComponent.hpp"
-#include "../Component/DrawableComponents.hpp"
 #include "./ISystem.hpp"
 
 #include <unordered_map>

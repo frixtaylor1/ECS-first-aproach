@@ -13,8 +13,7 @@ Entity::Entity() {
     id = id_counter;
 }
 
-Entity::~Entity() {
-}
+Entity::~Entity() {}
 
 bool Entity::operator == (const Entity& entity) const {
     return (id == entity.getId());

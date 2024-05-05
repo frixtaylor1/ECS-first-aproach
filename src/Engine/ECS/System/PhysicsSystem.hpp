@@ -10,7 +10,6 @@
 
 #include "../Entity/Entity.hpp"
 #include "../Component/LogicComponents.hpp"
-#include "../Component/DrawableComponents.hpp"
 #include "./ISystem.hpp"
 
 #include <unordered_map>

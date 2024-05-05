@@ -7,6 +7,8 @@
  */
 
 #include "./RenderSystem.hpp"
+#include "../Component/IComponent.hpp"
+#include "../Component/DrawableComponents.hpp"
 
 RenderSystem::RenderSystem(EntityContainer entities)
     : m_entities(entities) {}

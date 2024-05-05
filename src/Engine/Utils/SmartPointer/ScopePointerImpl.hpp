@@ -19,6 +19,7 @@ SafeUniquePtr<Type, doFree>::~SafeUniquePtr() {
     if (ptr_ && shouldDelete) {
         delete ptr_;
     }
+    ptr_ = nullptr;
 }
 
 template <typename Type, bool doFree>
