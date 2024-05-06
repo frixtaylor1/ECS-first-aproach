@@ -8,6 +8,60 @@
 
 #include "EntityManager.hpp"
 
+#include "EntityManager.hpp"
+
+EntityManager::EntityManager() = default;
+
+EntityManager::~EntityManager() = default;
+
+void EntityManager::addEntity(Entity* entity) {
+    m_entities.emplace_back(entity);
+}
+
+void EntityManager::removeEntity(size_t entityId) {
+    for (ScopePtr<Entity>& entity : m_entities) {
+        if (entity->getId() == entityId) {
+            entity->markForRemoval();
+            break;
+        }
+    }
+}
+
+void EntityManager::removeEntity(const ScopePtr<Entity>& entity) {
+    removeEntity(entity->getId());
+}
+
+
+void EntityManager::update() {
+    removeMarkedEntities();
+}
+
+void EntityManager::removeMarkedEntities() {
+    auto it = std::remove_if(m_entities.begin(), m_entities.end(),
+        [](const ScopePtr<Entity>& entity) {
+            return entity->isMarkedForRemoval();
+        });
+    m_entities.erase(it, m_entities.end());
+}
+
+
+ScopePtr<Entity>& EntityManager::getLastInsertEntity() {
+    return m_entities.back();
+}
+
+ScopePtr<Entity>& EntityManager::getEntityById(size_t id) {
+    for (ScopePtr<Entity>& entity : m_entities) {
+        if (entity->getId() == id) {
+            return entity;
+        }
+    }
+    return m_entities.back();
+}
+
+typename EntityManager::Container& EntityManager::getEntities() {
+    return m_entities;
+}
+
 /**  
  * MIT License
  *  

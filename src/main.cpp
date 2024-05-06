@@ -5,16 +5,59 @@
 #include "./Engine/ECS/System/CollisionSystem.hpp"
 #include "./Engine/ECS/Component/LogicComponents.hpp"
 #include "./Engine/Managers/EntityManager.hpp"
+#include "./Engine/Managers/SystemManager.hpp"
 #include "./Engine/Utils/Allocators/LinealAllocator.hpp"
 #include <math.h>
 #define FPS_RATE 60
+
+
+class GameEngine {
+public:
+    GameEngine() 
+        : m_systemManager(new SystemManager()), m_entityManager(new EntityManager()) {
+        initialize();
+    }
+
+    void run() {
+        while(!WindowShouldClose()) {
+            for (ScopePtr<ISystem>& system : m_systemManager->getSystems()) {
+                system->update();
+            }
+            m_entityManager->update();
+        }
+
+    }
+
+    ScopePtr<SystemManager, true>& getSystemManage() {
+        return m_systemManager;
+    }
+
+    ScopePtr<EntityManager, true>& getEntityMAnager() {
+        return m_entityManager;
+    }
+
+private:
+    void initialize() {
+        m_systemManager->addSystem<InputSystem>(m_entityManager->getEntities());
+        m_systemManager->addSystem<PhysicsSystem>(m_entityManager->getEntities());
+        m_systemManager->addSystem<CollisionSystem>(m_entityManager->getEntities());
+        m_systemManager->addSystem<RenderSystem>(m_entityManager->getEntities());
+    }
+
+private:
+    ScopePtr<SystemManager, true>   m_systemManager;
+    ScopePtr<EntityManager, true>   m_entityManager;
+};
 
 int main(void) {
     const int screenWidth   = 800;
     const int screenHeight  = 600;
 
+    GameEngine gameEngine;
+    ScopePtr<EntityManager, true>& entityManager = gameEngine.getEntityMAnager();
+    ScopePtr<SystemManager, true>& systemManager = gameEngine.getSystemManage();
+
     LinealAllocator<Entity> allocator;
-    EntityManager           entityManager;
 
     // OPEN WINDOW  //
     // INITIALIZING //
@@ -22,7 +65,7 @@ int main(void) {
         SetTargetFPS(FPS_RATE);
         std::cout << "WEIGHT OF A ENTITY: " << sizeof(ScopePtr<Entity>) << std::endl; 
 
-        for (size_t idxEntity = 0; idxEntity < 1000; idxEntity++) {
+        for (size_t idxEntity = 0; idxEntity < 10000; idxEntity++) {
             // Generate random position and size for the entity
             int posX = rand() % screenWidth;
             int posY = rand() % screenHeight;
@@ -30,30 +73,26 @@ int main(void) {
             randomColor.r = rand() % 256;
             randomColor.g = rand() % 256;
             randomColor.b = rand() % 256;
-            entityManager.addEntity(new (allocator) Entity()); 
-            size_t lasInsertId = entityManager.getLastInsertEntity()->getId();
-            entityManager.addComponent<RectangleDrawableComponent>(lasInsertId, posX, posY, 30, 30, Color{
+            entityManager->addEntity(new (allocator) Entity()); 
+            size_t lasInsertId = entityManager->getLastInsertEntity()->getId();
+            entityManager->addComponent<RectangleDrawableComponent>(lasInsertId, posX, posY, 30, 30, Color{
                 randomColor.r,
                 randomColor.g,
                 randomColor.b,
                 255
             });
-            entityManager.addComponent<PhysicsComponent>(lasInsertId);
+            entityManager->addComponent<PhysicsComponent>(lasInsertId);
         }
 
-        // SYSTEMS...
-        PhysicsSystem   physicsSys(entityManager.getEntities());
-        RenderSystem    renderSys(entityManager.getEntities());
-        InputSystem     inputSys(entityManager.getEntities());
-        CollisionSystem collisionSys(entityManager.getEntities());
-
-        renderSys.setRenderHandler([](ScopePtr<Entity>& entity){
+        RenderSystem* renderSys = systemManager->getSystem<RenderSystem>();
+        renderSys->setRenderHandler([](ScopePtr<Entity>& entity){
             if (auto&& rectangleEntity = entity->getComponent<RectangleDrawableComponent>()) {
                 DrawRectangleRec(rectangleEntity->rectangle, rectangleEntity->color);
             }
         });
 
-        physicsSys.setPhysicsHandler([&](ScopePtr<Entity>& entity, float deltaTime) {
+        PhysicsSystem* physicsSys = systemManager->getSystem<PhysicsSystem>();
+        physicsSys->setPhysicsHandler([](ScopePtr<Entity>& entity, float deltaTime) {
             PhysicsComponent* physicsComponent = entity->getComponent<PhysicsComponent>();
             RectangleDrawableComponent* rectangleComponent = entity->getComponent<RectangleDrawableComponent>();
 
@@ -85,22 +124,24 @@ int main(void) {
         // START MAIN ENGINE LOOP. //
         while (!WindowShouldClose()) {
             /* INPUT SYSTEM */
-            inputSys.update();
+            /* inputSys.update(); */
             /* INPUT SYSTEM */
 
             /* PHYSISCS SYSTEM */
-            physicsSys.update();
+            /* physicsSys.update(); */
             /* PHYSISCS SYSTEM */
 
             /* COLLITION SYSTEM */
-            collisionSys.update();
+            /* collisionSys.update(); */
             /* COLLITION SYSTEM */
 
             /* RENDER SYSTEM */
-            renderSys.update();
+            /* renderSys.update(); */
             /* RENDER SYSTEM */
 
-            entityManager.update();
+            /* entityManager->update(); */
+
+            gameEngine.run();
         }
         // END MAIN ENGINE LOOP. //
     CloseWindow();

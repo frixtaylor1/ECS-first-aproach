@@ -11,10 +11,8 @@
 #include "../ECS/Entity/Entity.hpp"
 #include <algorithm>
 
-template <size_t MaxCapacity = 160000>
 class EntityManager {
 private:
-    enum { ENTITIES_MAX_CAPACITY = MaxCapacity };
     using Container = std::vector<ScopePtr<Entity, false>>;
 public:
 

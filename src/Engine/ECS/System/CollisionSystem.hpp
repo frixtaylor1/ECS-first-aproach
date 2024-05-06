@@ -16,7 +16,7 @@
 #include <unordered_map>
 #include <functional>
 
-class CollisionSystem {
+class CollisionSystem : implements ISystem {
 private:
     using CollisionHandler = std::function<void(ScopePtr<Entity>&, ScopePtr<Entity>&)>;
 public:
