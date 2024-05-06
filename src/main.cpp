@@ -1,7 +1,3 @@
-#include "./Engine/ECS/Entity/Entity.hpp"
-#include "./Engine/ECS/Component/LogicComponents.hpp"
-#include "./Engine/Managers/EntityManager.hpp"
-
 #include "./Engine/Utils/Allocators/LinealAllocator.hpp"
 #include "./Engine/Engine.hpp"
 #include <math.h>
@@ -37,7 +33,9 @@ void engineDemo() {
     gameEngine.run();
 }
 
-void initilizeEntities(EntityManager* entityManager, LinealAllocator<Entity>& allocator, WindowProps const& windowProps) {    for (size_t idxEntity = 0; idxEntity < 10000; idxEntity++) {
+void initilizeEntities(EntityManager* entityManager, LinealAllocator<Entity>& allocator, WindowProps const& windowProps) {    
+    LOG_MESSAGE("INITIALIZING [FRIX GAME ENGINE]");
+    for (size_t idxEntity = 0; idxEntity < 10000; idxEntity++) {
         // Generate random position and size for the entity
         int posX = rand() % windowProps.width;
         int posY = rand() % windowProps.height;
@@ -59,26 +57,35 @@ void initilizeEntities(EntityManager* entityManager, LinealAllocator<Entity>& al
 
 void setPhysicsHandler(PhysicsSystem* physicsSys, WindowProps const& windowProps) {
     physicsSys->setPhysicsHandler([&windowProps](ScopePtr<Entity>& entity, float deltaTime) {
-        PhysicsComponent*           physicsComponent    = entity->getComponent<PhysicsComponent>();
-        RectangleDrawableComponent* rectangleComponent  = entity->getComponent<RectangleDrawableComponent>();
+        PhysicsComponent* physicsComponent = entity->getComponent<PhysicsComponent>();
+        RectangleDrawableComponent* rectangleComponent = entity->getComponent<RectangleDrawableComponent>();
 
-        const int screenHeight  = windowProps.height;
-        const int screenWidth   = windowProps.width;
+        const int screenHeight = windowProps.height;
+        const int screenWidth = windowProps.width;
 
-        float gravity           = 600.0f;
-        float bounceFactor      = 0.6f;
-        float lateralMovement   = 10.0f;
+        float gravity = 600.0f;
+        float bounceFactor = 0.6f;
+        float lateralMovement = 10.0f;
 
         physicsComponent->velocity.y += gravity * deltaTime;
         physicsComponent->velocity.x = lateralMovement * sin(GetTime());
 
         if (rectangleComponent->rectangle.y + rectangleComponent->rectangle.height >= screenHeight) {
-            physicsComponent->velocity.y *= -bounceFactor;
-            rectangleComponent->rectangle.y = screenHeight - rectangleComponent->rectangle.height;
+            if (physicsComponent->bounceCount < 5) {
+                physicsComponent->velocity.y *= -bounceFactor;
+                rectangleComponent->rectangle.y = screenHeight - rectangleComponent->rectangle.height;
+                physicsComponent->bounceCount++;
+            } else {
+                physicsComponent->velocity.y = 0;
+                physicsComponent->velocity.x = 0;
+            }
         }
 
         if (rectangleComponent->rectangle.x <= 0 || rectangleComponent->rectangle.x + rectangleComponent->rectangle.width >= screenWidth) {
-            physicsComponent->velocity.x *= -bounceFactor;
+            if (physicsComponent->bounceCount < 5) {
+                physicsComponent->velocity.x *= -bounceFactor;
+                physicsComponent->bounceCount++;
+            }
         }
 
         rectangleComponent->rectangle.x += physicsComponent->velocity.x * deltaTime;

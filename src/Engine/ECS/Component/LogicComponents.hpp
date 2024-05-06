@@ -36,12 +36,13 @@ struct PhysicsComponent : implements IComponent {
     /**
      * @param Vector2 velocity
      */
-    PhysicsComponent(Vector2 velocity, float speed, float velocityLimit);
+    PhysicsComponent(Vector2 velocity, float speed, float velocityLimit, float bounceCount);
     virtual ~PhysicsComponent();
 
     Vector2 velocity;
     float speed;
     float velocityLimit;
+    float bounceCount;
 };
 
 /**
