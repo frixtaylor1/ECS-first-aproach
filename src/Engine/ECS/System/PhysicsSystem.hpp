@@ -19,10 +19,10 @@ class PhysicsSystem : implements ISystem {
 private:
     using PhysicsHandler = std::function<void(ScopePtr<Entity>&, float delta)>;
 public:
-    PhysicsSystem(EntityContainer entities);
+    PhysicsSystem();
     virtual ~PhysicsSystem();
 
-    void update();
+    void update(ScopePtr<Entity>& entity);
     void setPhysicsHandler(size_t entityId, PhysicsHandler handler);
     void setPhysicsHandler(PhysicsHandler handler);
 
@@ -32,8 +32,7 @@ private:
 private:
     double          m_lastFrame = GetTime();
     double          m_deltaTime = 0;
-    EntityContainer m_entities;
-    std::vector<PhysicsHandler>    m_physicsComponentHandler;
+    std::vector<PhysicsHandler>             m_physicsComponentHandler;
     std::unordered_map<int, PhysicsHandler> m_physicsHandlers;
 };
 

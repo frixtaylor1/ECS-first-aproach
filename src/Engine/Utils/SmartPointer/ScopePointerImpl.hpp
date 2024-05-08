@@ -11,51 +11,49 @@
 
 #include "./ScopePointer.hpp"
 
-template <typename Type, bool isOwner>
-SafeUniquePtr<Type, isOwner>::SafeUniquePtr(Type* ptr) : ptr_(ptr) {}
+template <typename Type>
+SafeUniquePtr<Type>::SafeUniquePtr(Type* ptr) : ptr_(ptr) {}
 
-template <typename Type, bool isOwner>
-SafeUniquePtr<Type, isOwner>::~SafeUniquePtr() {
-    if (ptr_ && isOwner) {
+template <typename Type>
+SafeUniquePtr<Type>::~SafeUniquePtr() {
+    if (ptr_) {
         delete ptr_;
     }
     ptr_ = nullptr;
 }
 
-template <typename Type, bool isOwner>
-SafeUniquePtr<Type, isOwner>::SafeUniquePtr(SafeUniquePtr&& other) noexcept : ptr_(other.ptr_) {
+template <typename Type>
+SafeUniquePtr<Type>::SafeUniquePtr(SafeUniquePtr&& other) noexcept : ptr_(other.ptr_) {
     other.ptr_ = nullptr;
 }
 
-template <typename Type, bool isOwner>
-SafeUniquePtr<Type, isOwner>& SafeUniquePtr<Type, isOwner>::operator=(SafeUniquePtr&& other) noexcept {
+template <typename Type>
+SafeUniquePtr<Type>& SafeUniquePtr<Type>::operator=(SafeUniquePtr&& other) noexcept {
     if (this != &other) {
-        if (isOwner) {
-            delete ptr_;
-        }
+        delete ptr_;
         ptr_ = other.ptr_;
         other.ptr_ = nullptr;
     }
     return *this;
 }
 
-template <typename Type, bool isOwner>
-Type* SafeUniquePtr<Type, isOwner>::get() const noexcept {
+template <typename Type>
+Type* SafeUniquePtr<Type>::get() const noexcept {
     return ptr_;
 }
 
-template <typename Type, bool isOwner>
-Type& SafeUniquePtr<Type, isOwner>::operator*() const noexcept {
+template <typename Type>
+Type& SafeUniquePtr<Type>::operator*() const noexcept {
     return *ptr_;
 }
 
-template <typename Type, bool isOwner>
-Type* SafeUniquePtr<Type, isOwner>::operator->() const noexcept {
+template <typename Type>
+Type* SafeUniquePtr<Type>::operator->() const noexcept {
     return ptr_;
 }
 
-template <typename Type, bool isOwner>
-SafeUniquePtr<Type, isOwner>::operator bool() const noexcept {
+template <typename Type>
+SafeUniquePtr<Type>::operator bool() const noexcept {
     return ptr_ != nullptr;
 }
 

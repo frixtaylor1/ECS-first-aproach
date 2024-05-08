@@ -18,16 +18,14 @@ class InputSystem : implements ISystem {
 private:
   using Function = std::function<void()>;
 public:
-    InputSystem(EntityContainer entities);
+    InputSystem();
     virtual ~InputSystem();
 
-    void update();
+    void update(ScopePtr<Entity>& entity);
     void inputListener(bool isPressed, Function callback);
 
 private:
     InputComponent* isInputComponent(ScopePtr<Entity>& entity);
-
-    EntityContainer m_entities;
 };
 
 /**  

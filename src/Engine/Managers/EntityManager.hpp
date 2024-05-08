@@ -13,7 +13,7 @@
 
 class EntityManager {
 private:
-    using Container = std::vector<ScopePtr<Entity, false>>;
+    using Container = std::vector<ScopePtr<Entity>>;
 public:
 
     EntityManager();

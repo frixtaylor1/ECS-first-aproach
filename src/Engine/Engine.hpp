@@ -11,7 +11,7 @@
 #include "./Managers/EntityManager.hpp"
 #include "./Managers/SystemManager.hpp"
 
-#define FPS_RATE 60
+#define FPS_RATE 120
 
 struct WindowProps {
     int width;
@@ -26,8 +26,8 @@ public:
     ~Engine();
 
     void run();
-    ScopePtr<SystemManager, true>& getSystemManage();
-    ScopePtr<EntityManager, true>& getEntityMAnager();
+    ScopePtr<SystemManager>& getSystemManager();
+    ScopePtr<EntityManager>& getEntityManager();
     const WindowProps& getWindowProps() const;
     float getFpsRate() const;
 
@@ -38,8 +38,9 @@ private:
 private:
     WindowProps                     m_windowProps;
     float                           m_fpsRate;
-    ScopePtr<SystemManager, true>   m_systemManager;
-    ScopePtr<EntityManager, true>   m_entityManager;
+    ScopePtr<SystemManager>         m_systemManager;
+    ScopePtr<EntityManager>         m_entityManager;
+    bool                            m_isRunning = false;
 };
 
 #include "./ECS/System/RenderSystem.hpp"

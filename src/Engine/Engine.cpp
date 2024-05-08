@@ -19,19 +19,32 @@ Engine::~Engine() {
 }
 
 void Engine::run() {
-    while (!WindowShouldClose()) {
-        for (ScopePtr<ISystem>& system : m_systemManager->getSystems()) {
-            system->update();
-        }
-        m_entityManager->update();
+    auto& entities = m_entityManager->getEntities();
+    size_t idx = 0;
+    while (m_isRunning) {
+        BeginDrawing();
+            ClearBackground(DARKGRAY);
+            m_systemManager->getSystem<InputSystem>()->update(entities[idx]);
+            m_systemManager->getSystem<CollisionSystem>()->update(entities[idx]);
+            m_entityManager->update();
+        
+            for (ScopePtr<Entity>& entity : entities) {
+                m_systemManager->getSystem<PhysicsSystem>()->update(entity);
+                m_systemManager->getSystem<RenderSystem>()->update(entity);
+            }
+            
+            m_isRunning = !WindowShouldClose();
+        EndDrawing();
+        
+        if (idx == entities.size()) idx = 0;
     }
 }
 
-ScopePtr<SystemManager, true>& Engine::getSystemManage() {
+ScopePtr<SystemManager>& Engine::getSystemManager() {
     return m_systemManager;
 }
 
-ScopePtr<EntityManager, true>& Engine::getEntityMAnager() {
+ScopePtr<EntityManager>& Engine::getEntityManager() {
     return m_entityManager;
 }
 
@@ -44,6 +57,7 @@ float Engine::getFpsRate() const {
 }
 
 void Engine::initialize() {
+    m_isRunning = true;
     InitWindow(
         m_windowProps.width,
         m_windowProps.height,
@@ -54,10 +68,10 @@ void Engine::initialize() {
 }
 
 void Engine::initializeSystems() {
-    m_systemManager->addSystem<InputSystem>(m_entityManager->getEntities());
-    m_systemManager->addSystem<PhysicsSystem>(m_entityManager->getEntities());
+    m_systemManager->addSystem<InputSystem>();
+    m_systemManager->addSystem<PhysicsSystem>();
     m_systemManager->addSystem<CollisionSystem>(m_entityManager->getEntities());
-    m_systemManager->addSystem<RenderSystem>(m_entityManager->getEntities());
+    m_systemManager->addSystem<RenderSystem>();
 }
 
 /**  

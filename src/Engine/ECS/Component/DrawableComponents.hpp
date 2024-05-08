@@ -26,18 +26,17 @@ struct RectangleDrawableComponent : implements IDrawableComponent {
 
     virtual ~RectangleDrawableComponent();
     
-    Color color{ 
-        /* R */ 0,
-        /* G */ 0,
-        /* B */ 0,
-        /* A */ 0 
-    };
-    Rectangle rectangle{ 
-        /* POSX  */ 0.f,
-        /* POSY  */ 0.f,
-        /* WIDTH */ 0.f,
-        /* HEIGHT*/ 0.f 
-    };
+    Color color{ 0, 0, 0, 0 };
+
+    Rectangle rectangle{ 0.f, 0.f, 0.f, 0.f };
+};
+
+struct CubeDrawableComponent : implements IDrawableComponent {
+    CubeDrawableComponent(Vector3 cubePos, float size, Color color);
+    virtual ~CubeDrawableComponent();
+    Vector3 cubePos { 0.f, 0.f, 0.f };
+    float size = 0;
+    Color color { 0, 0, 0, 0 };
 };
 
 struct ImageDrawableComponent : implements IDrawableComponent {

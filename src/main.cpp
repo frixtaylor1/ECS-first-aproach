@@ -1,102 +1,99 @@
-#include "./Engine/Utils/Allocators/LinealAllocator.hpp"
+#include <iostream>
 #include "./Engine/Engine.hpp"
-#include <math.h>
+#include "./Engine/Utils/Allocators/LinealAllocator.hpp"
 
-void initilizeEntities(EntityManager* entityManager, LinealAllocator<Entity>& allocator, WindowProps const& windowProps);
-void setPhysicsHandler(PhysicsSystem* physicsSys, WindowProps const& windowProps);
-void setRenderHandler(RenderSystem* renderSys);
-void engineDemo();
+void initializeEntities(EntityManager* entityManager, WindowProps const& windowProps);
+void initializeRenderHandler(RenderSystem* renderSys, Camera3D& camera);
+void initializePhysicsHandlers(PhysicsSystem* physicsSys);
 
-int main(void) {
-    engineDemo();    
+int main() {
+    Engine*         gameEngine      = new Engine({ 800, 600, "Cubo Giratorio en 3D" });
+    EntityManager*  entityManager   = gameEngine->getEntityManager().get();
+    SystemManager*  systemManager   = gameEngine->getSystemManager().get();
+
+    initializeEntities(entityManager, gameEngine->getWindowProps());
+    
+    Camera3D camera     = { 0 };
+    camera.position     = { 50.0f, 50.0f, 50.0f };
+    camera.target       = { 0.0f, 25.0f, 0.0f };
+    camera.up           = { 0.0f, 1.0f, 0.0f };
+    camera.fovy         = 45.0f;
+    camera.projection   = CAMERA_PERSPECTIVE;
+
+    PhysicsSystem*  physicsSystem = systemManager->getSystem<PhysicsSystem>(); 
+    RenderSystem*   renderSystem  = systemManager->getSystem<RenderSystem>();
+
+    initializePhysicsHandlers(physicsSystem);
+    initializeRenderHandler(renderSystem, camera);
+
+    gameEngine->run();
+
+    delete gameEngine;
     return 0;
 }
 
-// IMPL...
+void initializeEntities(EntityManager* entityManager, WindowProps const& windowProps) {
+    LOG_MESSAGE("Inicializando entidades...");
+    for (size_t idx = 0; idx < 1000; idx++) {
+        float xPos = GetRandomValue(-windowProps.width / 2, windowProps.width / 2);
+        float yPos = GetRandomValue(20, 50);
+        float zPos = GetRandomValue(-windowProps.height / 2, windowProps.height / 2);
 
-void engineDemo() {
-    Engine gameEngine({ 800,600, "FRIX GAME ENGINE" });
-    ScopePtr<EntityManager, true>& entityManager = gameEngine.getEntityMAnager();
-    ScopePtr<SystemManager, true>& systemManager = gameEngine.getSystemManage();
-
-    LinealAllocator<Entity> allocator;
-
-    std::cout << "WEIGHT OF A ENTITY: " << sizeof(ScopePtr<Entity>) << std::endl;
-
-    RenderSystem*   renderSys   = systemManager->getSystem<RenderSystem>();
-    PhysicsSystem*  physicsSys  = systemManager->getSystem<PhysicsSystem>();
-
-    initilizeEntities(entityManager.get(), allocator, gameEngine.getWindowProps());
-    setPhysicsHandler(physicsSys, gameEngine.getWindowProps());
-    setRenderHandler(renderSys);
-    
-    gameEngine.run();
-}
-
-void initilizeEntities(EntityManager* entityManager, LinealAllocator<Entity>& allocator, WindowProps const& windowProps) {    
-    LOG_MESSAGE("INITIALIZING [FRIX GAME ENGINE]");
-    for (size_t idxEntity = 0; idxEntity < 10000; idxEntity++) {
-        // Generate random position and size for the entity
-        int posX = rand() % windowProps.width;
-        int posY = rand() % windowProps.height;
-        Color randomColor;
-        randomColor.r = rand() % 256;
-        randomColor.g = rand() % 256;
-        randomColor.b = rand() % 256;
-        entityManager->addEntity(new (allocator) Entity());
-        size_t lasInsertId = entityManager->getLastInsertEntity()->getId();
-        entityManager->addComponent<RectangleDrawableComponent>(lasInsertId, posX, posY, 30, 30, Color{
-            randomColor.r,
-            randomColor.g,
-            randomColor.b,
-            255
-            });
-        entityManager->addComponent<PhysicsComponent>(lasInsertId);
+        entityManager->addEntity(new Entity());
+        entityManager->addComponent<CubeDrawableComponent>(
+            idx,
+            Vector3{ xPos, yPos, zPos },
+            2.0f,
+            RED
+        );
+        entityManager->addComponent<PhysicsComponent>(idx);
     }
 }
 
-void setPhysicsHandler(PhysicsSystem* physicsSys, WindowProps const& windowProps) {
-    physicsSys->setPhysicsHandler([&windowProps](ScopePtr<Entity>& entity, float deltaTime) {
-        PhysicsComponent* physicsComponent = entity->getComponent<PhysicsComponent>();
-        RectangleDrawableComponent* rectangleComponent = entity->getComponent<RectangleDrawableComponent>();
+void initializeRenderHandler(RenderSystem* renderSys, Camera3D& camera) {
+    renderSys->setRenderHandler([&camera](ScopePtr<Entity>& entity) {
+        CubeDrawableComponent* cubeEntity = entity->getComponent<CubeDrawableComponent>();
+        
+        BeginMode3D(camera);
+            DrawCube(
+                cubeEntity->cubePos,
+                cubeEntity->size,
+                cubeEntity->size,
+                cubeEntity->size,
+                cubeEntity->color
+            );
+        EndMode3D();
 
-        const int screenHeight = windowProps.height;
-        const int screenWidth = windowProps.width;
-
-        float gravity = 600.0f;
-        float bounceFactor = 0.6f;
-        float lateralMovement = 10.0f;
-
-        physicsComponent->velocity.y += gravity * deltaTime;
-        physicsComponent->velocity.x = lateralMovement * sin(GetTime());
-
-        if (rectangleComponent->rectangle.y + rectangleComponent->rectangle.height >= screenHeight) {
-            if (physicsComponent->bounceCount < 5) {
-                physicsComponent->velocity.y *= -bounceFactor;
-                rectangleComponent->rectangle.y = screenHeight - rectangleComponent->rectangle.height;
-                physicsComponent->bounceCount++;
-            } else {
-                physicsComponent->velocity.y = 0;
-                physicsComponent->velocity.x = 0;
-            }
-        }
-
-        if (rectangleComponent->rectangle.x <= 0 || rectangleComponent->rectangle.x + rectangleComponent->rectangle.width >= screenWidth) {
-            if (physicsComponent->bounceCount < 5) {
-                physicsComponent->velocity.x *= -bounceFactor;
-                physicsComponent->bounceCount++;
-            }
-        }
-
-        rectangleComponent->rectangle.x += physicsComponent->velocity.x * deltaTime;
-        rectangleComponent->rectangle.y += physicsComponent->velocity.y * deltaTime;
+        DrawFPS(10, 10);
     });
 }
 
-void setRenderHandler(RenderSystem* renderSys) {
-    renderSys->setRenderHandler([](ScopePtr<Entity>& entity) {
-        if (auto&& rectangleEntity = entity->getComponent<RectangleDrawableComponent>()) {
-            DrawRectangleRec(rectangleEntity->rectangle, rectangleEntity->color);
+void initializePhysicsHandlers(PhysicsSystem* physicsSys) {
+    physicsSys->setPhysicsHandler([](ScopePtr<Entity>& entity, float deltaTime) {
+        PhysicsComponent*       physicsComponent    = entity->getComponent<PhysicsComponent>();
+        CubeDrawableComponent*  cubeComponent       = entity->getComponent<CubeDrawableComponent>();
+
+        // Simulación de la gravedad
+        float gravity = 9.81f;
+        physicsComponent->velocity.y -= gravity * deltaTime;
+
+        // Movimiento horizontal aleatorio
+        if (cubeComponent->cubePos.y <= 0) {
+            physicsComponent->velocity.x = 0;
+        }
+
+        cubeComponent->cubePos.x += physicsComponent->velocity.x * deltaTime;
+        cubeComponent->cubePos.y += physicsComponent->velocity.y * deltaTime;
+        cubeComponent->cubePos.z += physicsComponent->velocity.z * deltaTime;
+
+        if (cubeComponent->cubePos.y <= 0) {
+            physicsComponent->velocity.y *= -0.6f;
+            physicsComponent->bounceCount++;
+
+            if (physicsComponent->bounceCount >= 2) {
+                physicsComponent->velocity.y    = 0;
+                physicsComponent->bounceCount   = 0;
+            }
         }
     });
 }

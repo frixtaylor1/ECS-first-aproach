@@ -9,18 +9,12 @@
 #include "./CollisionSystem.hpp"
 
 CollisionSystem::CollisionSystem(EntityContainer entities) : m_entities(entities) {}
-CollisionSystem::~CollisionSystem() {}
+CollisionSystem::~CollisionSystem() = default;
 
 
-void CollisionSystem::update() {
-    for (ScopePtr<Entity>& entityA : m_entities) {
-        if (!isCollisionComponent(entityA)) {
-            continue;
-        }
-
-        for (ScopePtr<Entity>& entityB : m_entities) {
-            updateCollisionBetween(entityA, entityB);
-        }
+void CollisionSystem::update(ScopePtr<Entity>& entityA) {
+    for (ScopePtr<Entity>& entityB : m_entities) {
+        updateCollisionBetween(entityA, entityB);
     }
 }
 

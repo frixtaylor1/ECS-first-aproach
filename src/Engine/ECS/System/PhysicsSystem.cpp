@@ -8,26 +8,25 @@
 
 #include "./PhysicsSystem.hpp"
 
-PhysicsSystem::PhysicsSystem(EntityContainer entities) : m_entities(entities) {}
+PhysicsSystem::PhysicsSystem() {
+    m_physicsComponentHandler.reserve(10000);
+}
+
 PhysicsSystem::~PhysicsSystem() {}
 
-void PhysicsSystem::update() {
-    double currentFrame = GetTime();
-    m_deltaTime = currentFrame - m_lastFrame;
-    m_lastFrame = currentFrame;
+void PhysicsSystem::update(ScopePtr<Entity>& entity) {
+    m_deltaTime = GetFrameTime();
 
-    for (ScopePtr<Entity>& entity : m_entities) {
-        if (!isPhysicsComponent(entity)) {
-            continue;
-        }
+    if (!isPhysicsComponent(entity)) {
+        return ;
+    }
 
-        for (auto handler : m_physicsComponentHandler) {
-            handler(entity, m_deltaTime);
-        }
+    for (auto& handler : m_physicsComponentHandler) {
+        handler(entity, m_deltaTime);
+    }
 
-        if (m_physicsHandlers.find(entity->getId()) != m_physicsHandlers.end()) {
-            m_physicsHandlers[entity->getId()](entity, m_deltaTime);
-        }
+    if (m_physicsHandlers.find(entity->getId()) != m_physicsHandlers.end()) {
+        m_physicsHandlers[entity->getId()](entity, m_deltaTime);
     }
 }
 

@@ -23,7 +23,7 @@ public:
     CollisionSystem(EntityContainer entities);
     ~CollisionSystem();
 
-    void update();
+    void update(ScopePtr<Entity>& entityA);
     void setCollisionHandler(size_t entityId1, size_t entityId2, CollisionHandler handler);
 
 private:

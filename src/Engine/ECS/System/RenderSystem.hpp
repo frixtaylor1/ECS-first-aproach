@@ -21,20 +21,19 @@ class RenderSystem : implements ISystem
 private:
     using RenderHandler = std::function<void(ScopePtr<Entity>&)>;
 public:
-    RenderSystem(EntityContainer entities);
-    virtual ~RenderSystem() {}
+    RenderSystem();
+    virtual ~RenderSystem();
 
-    void update();
+    void update(ScopePtr<Entity>& entity);
     void setRenderHandler(size_t entityId, RenderHandler handler);
     void setRenderHandler(RenderHandler handler);
 
 private:
-    void renderLogic();
+    void renderLogic(ScopePtr<Entity>& entity);
     IDrawableComponent* isRenderable(ScopePtr<Entity>& entity);
 
 private:
-    EntityContainer m_entities;
-    std::vector<RenderHandler> m_renderHandlerByComponent;
+    std::vector<RenderHandler> m_renderHandlerByComponent{};
     std::unordered_map<int, RenderHandler>  m_renderHandlers;
 };
 

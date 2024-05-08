@@ -8,20 +8,23 @@
 
 #include "./InputSystem.hpp"
 
-InputSystem::InputSystem(EntityContainer entities) : m_entities(entities) {}
-InputSystem::~InputSystem() {}
+InputSystem::InputSystem() = default;
+InputSystem::~InputSystem() = default;
 
-void InputSystem::update() {
-    for (ScopePtr<Entity>& entity : m_entities) {
-        InputComponent* inputComponent = isInputComponent(entity);
-        if (inputComponent) {
-            inputComponent->key = GetKeyPressed();
-            if (IsKeyPressed(inputComponent->key)) {
-                inputComponent->keyPressed = true;
-            }
-            else {
-                inputComponent->keyPressed = false;
-            }
+void InputSystem::update(ScopePtr<Entity>& entity) {
+    
+    if (IsKeyPressed(KEY_ESCAPE)) {
+        CloseWindow();
+    }
+
+    InputComponent* inputComponent = isInputComponent(entity);
+    if (inputComponent) {
+        inputComponent->key = GetKeyPressed();
+        if (IsKeyPressed(inputComponent->key)) {
+            inputComponent->keyPressed = true;
+        }
+        else {
+            inputComponent->keyPressed = false;
         }
     }
 }

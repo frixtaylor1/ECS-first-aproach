@@ -9,10 +9,11 @@
 #pragma once
 
 #include "../../Utils/Common.hpp"
+#include "../Entity/Entity.hpp"
 
 interface ISystem {
     virtual ~ISystem();
-    virtual void update() = 0;    
+    virtual void update(ScopePtr<Entity>& entity) = 0;    
 };
 
 /**  

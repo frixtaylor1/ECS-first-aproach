@@ -19,6 +19,10 @@ ImageDrawableComponent::~ImageDrawableComponent() {}
 TextureDrawableComponent::TextureDrawableComponent(const Texture& texture) : texture(texture) {}
 TextureDrawableComponent::~TextureDrawableComponent() {}
 
+
+CubeDrawableComponent::CubeDrawableComponent(Vector3 cubePos, float size, Color color) : cubePos(cubePos), size(size), color(color) {}
+CubeDrawableComponent::~CubeDrawableComponent() {}
+
 /**  
  * MIT License
  *  
